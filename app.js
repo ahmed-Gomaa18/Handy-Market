@@ -24,13 +24,14 @@ app.use(bodyparser.json());
 
 
 // Router
-const authRouter = require('./routes/auth.router')
+const authRouter = require('./routes/auth.router');
+const productRouter = require('./routes/product.router');
 
 
 
 // Main URLs
 app.use('/api/v1/auth' , authRouter);
-
+app.use('/api/v1/product', productRouter);
 
 
 
