@@ -10,7 +10,7 @@ const moment = require('moment');
 const signup = async (req, res)=>{
     try {
         //, full_name , phone ,address
-        const {user_name , email , password , age , gender , role ,phone ,address} = req.body;
+        const {user_name , email , password , age , gender , role ,phone ,address , confirmPassword} = req.body;
         const newUser = new User({user_name , email , password , age , role , gender , phone , address});
         const savedUser = await newUser.save();
         if (!savedUser){
@@ -43,7 +43,7 @@ const signup = async (req, res)=>{
 
 const sellerSignup = async (req, res)=>{
     try {
-        const {user_name , email , password , age , gender , role , phone , address , full_name , profile_image , shop_name ,  description} = req.body;
+        const {user_name , email , password , age , gender , role , phone , address , full_name , profile_image , shop_name ,  description , confirmPassword} = req.body;
         const newUser = new User({user_name , email , password , age , role , gender , phone , address , full_name , profile_image ,description ,shop_name});
         const savedUser = await newUser.save();
         if (!savedUser){
