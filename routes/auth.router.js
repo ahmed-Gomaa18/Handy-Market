@@ -2,12 +2,15 @@ const router = require('express').Router();
 const { auth } = require('../MiddleWare/auth.md');
 const authController = require('../controllers/auth.controller');
 const endPointAuth = require('../utils/auth.endPoint');
+const validateDto = require('../MiddleWare/validate-dto');
+const authSchema = require('../schema/auth.schema');
+const ajvInstance = require('../schema/ajv-instance');
 
 //signUp 
-router.post('/singUp' , authController.signup);
+router.post('/singUp' ,validateDto(ajvInstance.compile(authSchema.singUpSchema)) ,authController.signup);
 
-// Seller signUp 
-router.post('/seller/singUp' , authController.sellerSignup);
+// SellersignUp 
+router.post('/seller/singUp' ,validateDto(ajvInstance.compile(authSchema.sellerSignUpSchema)) ,authController.sellerSignup);
 
 //confrimEmail
 router.get('/confrimEmail/:token' , authController.cofrimEmail);
