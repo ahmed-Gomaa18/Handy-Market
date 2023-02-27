@@ -20,18 +20,8 @@ const orderSchema = new Schema({
             quantity: {
                 type: Number,
                 default: 1
-            },
-            // product_total_price: { // driven value 
-            //     type: Number,
-            //     default: 1
-            // }
-        }],
-        validate:{
-            validator: function(v){
-                return Array.isArray(v) && v.length > 0;
-            },
-            message: props => `Order must have at least one of ${props.path}`
-        }
+            }
+        }]
     },
     totalPrice: {
         type: Number,
@@ -56,7 +46,9 @@ const orderSchema = new Schema({
         default: "placed",
         enum: ['placed', 'received', 'rejected', 'onWay']
     }
-}, { timestamps: true });
+},{ 
+    timestamps: true 
+});
 
 // TODO: create order model
 const Order = mongoose.model('Orders', orderSchema);

@@ -10,7 +10,7 @@ const moment = require('moment');
 const signup = async (req, res)=>{
     try {
         //, full_name , phone ,address
-        const {user_name , email , password , age , gender , role ,phone ,address} = req.body;
+        const {user_name , email , password , age , gender , role ,phone ,address , confirmPassword} = req.body;
         const newUser = new User({user_name , email , password , age , role , gender , phone , address});
         const savedUser = await newUser.save();
         if (!savedUser){
@@ -25,6 +25,39 @@ const signup = async (req, res)=>{
            
             sendEmail(savedUser.email , message).then(()=>{
                 res.status(201).json({message:"Done" , savedUser });
+            }).catch(()=>{
+                res.status(409).json({message:"Email not Right One"});
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        if (error.keyValue?.email) {
+            
+            res.status(409).json({message:"Email Exist"});
+        } else {
+            console.log(error);
+            res.status(500).json({message:"catch error : " + error.message }); 
+        }
+    }
+}
+
+const sellerSignup = async (req, res)=>{
+    try {
+        const {user_name , email , password , age , gender , role , phone , address , full_name , profile_image , shop_name ,  description , confirmPassword} = req.body;
+        const newUser = new User({user_name , email , password , age , role , gender , phone , address , full_name , profile_image ,description ,shop_name});
+        const savedUser = await newUser.save();
+        if (!savedUser){
+            res.status(503).json({message:"Sorry , Please try to signup agian"})
+        } else {
+            const token = jwt.sign({id:savedUser._id} ,process.env.EMAIL_TOKEN , {expiresIn: 5 * 60 });
+
+            const link = `${req.protocol}://${req.headers.host}/api/v1/auth/confrimEmail/${token}`;
+            const link2 = `${req.protocol}://${req.headers.host}/api/v1/auth/resendToken/${savedUser._id}`;
+            const message = `<a href =${link}>Plase Follow me to Confrim your account</a> <br>
+            <a href = ${link2}>re-send confrimation Email</a>`;
+           
+            sendEmail(savedUser.email , message).then(()=>{
+                res.status(201).json({message:"Done" , savedUser })
             }).catch(()=>{
                 res.status(409).json({message:"Email not Right One"});
             })
@@ -136,15 +169,14 @@ const login = async (req, res)=>{
                         if (!match) {
                             res.status(400).json({message:"Email and Password misMatch"});
                         } else {
-
                             // I append Check if already login or not
                             if(user.active){
                                 res.status(400).json({message:"You are Already Login."})
                             }
                             else{
                                 let expiresIn = '24h';
-                                if (rememberMe) {
-                                    expiresIn = '7d'
+                                if (rememberMe){
+                                    expiresIn = '7d' 
                                 }
                                 const token = jwt.sign({id:user._id , isLoggedIn:true} , process.env.TOKEN_SIGNATURE , {expiresIn});
                                 const updateStaus = await User.findByIdAndUpdate(user._id , {active:true} , {new:true}).select('-_id active')
@@ -252,5 +284,6 @@ module.exports = {
     sendCode ,
     forgetPassword ,
     signOut ,
-    checkCode
+    checkCode ,
+    sellerSignup
 }
