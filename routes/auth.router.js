@@ -6,6 +6,9 @@ const endPointAuth = require('../utils/auth.endPoint');
 //signUp 
 router.post('/singUp' , authController.signup);
 
+// Seller signUp 
+router.post('/seller/singUp' , authController.sellerSignup);
+
 //confrimEmail
 router.get('/confrimEmail/:token' , authController.cofrimEmail);
 

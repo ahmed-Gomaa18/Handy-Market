@@ -41,6 +41,39 @@ const signup = async (req, res)=>{
     }
 }
 
+const sellerSignup = async (req, res)=>{
+    try {
+        const {user_name , email , password , age , gender , role , phone , address , full_name , profile_image , shop_name ,  description} = req.body;
+        const newUser = new User({user_name , email , password , age , role , gender , phone , address , full_name , profile_image ,description ,shop_name});
+        const savedUser = await newUser.save();
+        if (!savedUser){
+            res.status(503).json({message:"Sorry , Please try to signup agian"})
+        } else {
+            const token = jwt.sign({id:savedUser._id} ,process.env.EMAIL_TOKEN , {expiresIn: 5 * 60 });
+
+            const link = `${req.protocol}://${req.headers.host}/api/v1/auth/confrimEmail/${token}`;
+            const link2 = `${req.protocol}://${req.headers.host}/api/v1/auth/resendToken/${savedUser._id}`;
+            const message = `<a href =${link}>Plase Follow me to Confrim your account</a> <br>
+            <a href = ${link2}>re-send confrimation Email</a>`;
+           
+            sendEmail(savedUser.email , message).then(()=>{
+                res.status(201).json({message:"Done" , savedUser })
+            }).catch(()=>{
+                res.status(409).json({message:"Email not Right One"});
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        if (error.keyValue?.email) {
+            
+            res.status(409).json({message:"Email Exist"});
+        } else {
+            console.log(error);
+            res.status(500).json({message:"catch error : " + error.message }); 
+        }
+    }
+}
+
 //Test Done
 const resendToken  = async(req, res)=>{
 
@@ -252,5 +285,6 @@ module.exports = {
     sendCode ,
     forgetPassword ,
     signOut ,
-    checkCode
+    checkCode ,
+    sellerSignup
 }
