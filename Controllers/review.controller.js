@@ -2,7 +2,6 @@ const Review = require('../Models/Review.model');
 
 
 let createReview = (req, res)=>{
-    console.log({...req.body})
     let newReview = new Review({...req.body});
     newReview.save()
     .then(()=>{
