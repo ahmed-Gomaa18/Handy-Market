@@ -38,65 +38,85 @@ let deleteCartOnExpire = async (userId) => {
 }
 
 let addToCart = async (req, res) => {
-    // TODO: add to cart
-    const cart = await Cart.findOne({ user_id: req.params['userId'] });
-    const prodId = req.params['productId'];
-    if(cart) {
-        let existedProduct = cart.products.find(productInfo =>  productInfo.product_id == prodId);
-        if(!existedProduct) {
-            await Cart.findOneAndUpdate(
-            { user_id: req.params['userId'] }, 
-            { $push: { "products": { product_id: prodId }}}, 
-            {new:true});
-            res.status(200).json({ message: "updated cart" });
+    try{
+        // TODO: add to cart
+        const cart = await Cart.findOne({ user_id: req.params['userId'] });
+        const prodId = req.params['productId'];
+        if(cart) {
+            let existedProduct = cart.products.find(productInfo =>  productInfo.product_id == prodId);
+            if(!existedProduct) {
+                await Cart.findOneAndUpdate(
+                { user_id: req.params['userId'] }, 
+                { $push: { "products": { product_id: prodId }}}, 
+                {new:true});
+                res.status(200).json({ message: "updated cart" });
+            } else {
+                res.status(400).json({ message: "this product exists in cart" });
+            }
         } else {
-            res.status(400).json({ message: "this product exists in cart" });
+            let newCart = new Cart({ user_id: req.params['userId'], products: [{ product_id: prodId, quantity: 1 }] });
+            let cartInfo = await newCart.save();
+            res.status(200).json(cartInfo);
         }
-    } else {
-        let newCart = new Cart({ user_id: req.params['userId'], products: [{ product_id: prodId, quantity: 1 }] });
-        let cartInfo = await newCart.save();
-        res.status(200).json(cartInfo);
+    }
+    catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
     }
 }
 
 let saveCart = async (req, res) => {
-    // TODO: add cart
-    // Analyze the cart => Find exisiting cart ==> update cart
-    const cart = await Cart.findOne({ user_id: req.params['userId'] });
+    try{
+        // TODO: add cart
+        // Analyze the cart => Find exisiting cart ==> update cart
+        const cart = await Cart.findOne({ user_id: req.params['userId'] });
 
-    const requestBody = req.body.products;
+        const requestBody = req.body.products;
 
-    // Split the string into an array of strings
-    const stringArray = requestBody.split("-");
+        // Split the string into an array of strings
+        const stringArray = requestBody.split("-");
 
-    // Map the array of strings to an array of objects
-    const objectArray = stringArray.map(item => {
-      const values = item.split(",");
-      return { product_id: values[0], quantity: parseFloat(values[1]) };
-    });
-    
-    if(cart) {
-        await Cart.findOneAndUpdate(
-        { user_id: req.params['userId'] },
-        { products: objectArray },
-        { new:true, upsert: true });
-        res.status(200).json({ message: "updated cart and saved" });
+        // Map the array of strings to an array of objects
+        const objectArray = stringArray.map(item => {
+        const values = item.split(",");
+        return { product_id: values[0], quantity: parseFloat(values[1]) };
+        });
+        
+        if(cart) {
+            await Cart.findOneAndUpdate(
+            { user_id: req.params['userId'] },
+            { products: objectArray },
+            { new:true, upsert: true });
+            res.status(200).json({ message: "updated cart and saved" });
+        }
     }
+    catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+
 }
 
 let deleteFromCart = async (req, res) => {
-    // TODO: delete from cart
-    const cart = await Cart.findOne({ user_id: req.params['userId'] });
-    const prodId = req.params['productId'];
-    let existedProduct = cart.products.find(productInfo =>  productInfo.product_id == prodId);
-    if(!existedProduct) {
-        res.status(200).json({ message: "this product not exists in cart" });
-    }
-    await Cart.findOneAndUpdate(
-        { user_id: req.params['userId'] }, 
-        { $pull: { "products": { product_id: prodId }}},
-        { new:true });
+
+    try{
+        
+        // TODO: delete from cart
+        const cart = await Cart.findOne({ user_id: req.params['userId'] });
+        const prodId = req.params['productId'];
+        let existedProduct = cart.products.find(productInfo =>  productInfo.product_id == prodId);
+        if(!existedProduct) {
+            res.status(200).json({ message: "this product not exists in cart" });
+        }
+        await Cart.findOneAndUpdate(
+            { user_id: req.params['userId'] }, 
+            { $pull: { "products": { product_id: prodId }}},
+            { new:true });
+
         res.status(200).json({ message: "delete prodcut from cart and updated successfully" });
+    
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+
 }
 
 module.exports = {
