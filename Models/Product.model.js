@@ -81,6 +81,28 @@ const productSchema = new mongoose.Schema({
     timestamps:true
 })
 
+// Check Duolicated Name For Same Seller (ceated_by)
+productSchema.pre("save" ,async function(next) {
+    
+    const allproducts = await Product.find({created_by: this.created_by});
+    
+    if(allproducts){
+        let duplicatedName = allproducts.find((product)=>{
+            return product.product_name == this.product_name
+        })
+        if (duplicatedName){
+            throw Error('Poduct Name Already exist...')
+        }
+        else{
+            next();
+        }
+        
+    }else{
+        next();
+    }
+      
+  });
+
 const Product = mongoose.model('Products', productSchema);
 
 

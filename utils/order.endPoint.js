@@ -1,7 +1,7 @@
 const {roles} = require('../MiddleWare/auth.md')
 
 const endPoint = {
-    signOut :[roles.Admin , roles.Customer ,roles.Seller ],
+    order :[roles.Customer ]
 }
 
 module.exports = endPoint

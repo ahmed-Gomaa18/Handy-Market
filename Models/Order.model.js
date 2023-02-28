@@ -10,8 +10,7 @@ const orderSchema = new Schema({
         ref: 'Users',
         required: true
     },
-    products:{
-        type: [{
+    products:[{
             product_id: {
                 type: ObjectId,
                 ref: 'Products'
@@ -20,19 +19,8 @@ const orderSchema = new Schema({
             quantity: {
                 type: Number,
                 default: 1
-            },
-            // product_total_price: { // driven value 
-            //     type: Number,
-            //     default: 1
-            // }
-        }],
-        validate:{
-            validator: function(v){
-                return Array.isArray(v) && v.length > 0;
-            },
-            message: props => `Order must have at least one of ${props.path}`
-        }
-    },
+            }
+    }],
     totalPrice: {
         type: Number,
         default: 1
@@ -55,7 +43,8 @@ const orderSchema = new Schema({
         type: String, 
         default: "placed",
         enum: ['placed', 'received', 'rejected', 'onWay']
-    }
+    },
+    date:String
 }, { timestamps: true });
 
 // TODO: create order model
