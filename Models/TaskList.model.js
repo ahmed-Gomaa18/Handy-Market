@@ -5,11 +5,16 @@ const ObjectId=Schema.Types.ObjectId;
 
 const taskListSchema=new Schema(
 {
-    product_id:{
-       type:ObjectId,
-       ref:"Product",
-       required:true
-    },
+    products:[{
+        product_id: {
+            type: ObjectId,
+            ref: 'Products'
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        }
+    }],
     user_id:{
         type:ObjectId,
         ref:"User",

@@ -10,8 +10,7 @@ const orderSchema = new Schema({
         ref: 'Users',
         required: true
     },
-    products:{
-        type: [{
+    products:[{
             product_id: {
                 type: ObjectId,
                 ref: 'Products'
@@ -21,8 +20,7 @@ const orderSchema = new Schema({
                 type: Number,
                 default: 1
             }
-        }]
-    },
+    }],
     totalPrice: {
         type: Number,
         default: 1
@@ -45,10 +43,9 @@ const orderSchema = new Schema({
         type: String, 
         default: "placed",
         enum: ['placed', 'received', 'rejected', 'onWay']
-    }
-},{ 
-    timestamps: true 
-});
+    },
+    date:String
+}, { timestamps: true });
 
 // TODO: create order model
 const Order = mongoose.model('Orders', orderSchema);
