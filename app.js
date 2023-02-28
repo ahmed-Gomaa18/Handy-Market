@@ -21,20 +21,13 @@ app.use(bodyparser.urlencoded({extended: true}));
 // parse application/json
 app.use(bodyparser.json());
 
-
-
 // Router
-const authRouter = require('./routes/auth.router')
-
-
+const authRouter = require('./routes/auth.router');
+const cartRouter = require('./routes/cart.router');
 
 // Main URLs
 app.use('/api/v1/auth' , authRouter);
-
-
-
-
-
+app.use('/api/v1/cart' , cartRouter);
 
 const PORT = process.env.PORT || 3000;
 
