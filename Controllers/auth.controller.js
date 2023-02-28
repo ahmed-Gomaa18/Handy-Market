@@ -24,7 +24,7 @@ const signup = async (req, res)=>{
             <a href = ${link2}>re-send confrimation Email</a>`;
            
             sendEmail(savedUser.email , message).then(()=>{
-                res.status(201).json({message:"Done" , savedUser })
+                res.status(201).json({message:"Done" , savedUser });
             }).catch(()=>{
                 res.status(409).json({message:"Email not Right One"});
             })
