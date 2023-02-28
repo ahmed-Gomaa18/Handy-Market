@@ -27,7 +27,8 @@ const productRouter = require('./routes/product.router');
 const orderRouter = require('./routes/order.router');
 const cartRouter = require('./routes/cart.router');
 const reviewRouter = require('./routes/review.router');
-const categoryRouter = require('./routes/category.router')
+const categoryRouter = require('./routes/category.router');
+const systemRouter = require('./routes/system.router')
 
 
 // Main URLs
@@ -37,6 +38,7 @@ app.use('/api/v1/order' , orderRouter);
 app.use('/api/v1/cart' , cartRouter);
 app.use('/api/v1/review' , reviewRouter);
 app.use('/api/v1/category' , categoryRouter);
+app.use('/api/v1/system' , systemRouter);
 
 
 const PORT = process.env.PORT || 3000;
