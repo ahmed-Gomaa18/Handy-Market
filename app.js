@@ -25,7 +25,8 @@ app.use(bodyparser.json());
 const authRouter = require('./routes/auth.router')
 const productRouter = require('./routes/product.router');
 const orderRouter = require('./routes/order.router');
-const reviewRouter = require('./routes/cart.router');
+const cartRouter = require('./routes/cart.router');
+const reviewRouter = require('./routes/review.router');
 
 // Main URLs
 app.use('/api/v1/auth' , authRouter);
