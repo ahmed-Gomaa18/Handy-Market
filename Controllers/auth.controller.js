@@ -170,10 +170,10 @@ const login = async (req, res)=>{
                             res.status(400).json({message:"Email and Password misMatch"});
                         } else {
                             // I append Check if already login or not
-                            if(user.active){
-                                res.status(400).json({message:"You are Already Login."})
-                            }
-                            else{
+                            //if(user.active){
+                            //    res.status(400).json({message:"You are Already Login."})
+                            //}
+                            //else{
                                 let expiresIn = '24h';
                                 if (rememberMe){
                                     expiresIn = '7d' 
@@ -181,7 +181,7 @@ const login = async (req, res)=>{
                                 const token = jwt.sign({id:user._id , isLoggedIn:true} , process.env.TOKEN_SIGNATURE , {expiresIn});
                                 const updateStaus = await User.findByIdAndUpdate(user._id , {active:true} , {new:true}).select('-_id active')
                                 res.status(201).json({message:"Login Success" , token , updateStaus});
-                            }
+                            //}
                         }  
                     }
                 }

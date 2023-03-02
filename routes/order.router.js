@@ -7,7 +7,7 @@ const ajvInstance = require('../schema/ajv-instance');
 const  createOrderSchema  = require('../schema/order.schema');
 
 //create order
-router.post('/create',auth(orderEndPoint.order),validateDto(ajvInstance.compile(createOrderSchema.createOrderSchema)) ,orderController.createOrder);
+router.post('/create',auth(orderEndPoint.order), validateDto(ajvInstance.compile(createOrderSchema.createOrderSchema)), orderController.createOrder);
 
 
 //update

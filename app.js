@@ -29,6 +29,7 @@ const cartRouter = require('./routes/cart.router');
 const reviewRouter = require('./routes/review.router');
 const categoryRouter = require('./routes/category.router');
 const systemRouter = require('./routes/system.router');
+const balanceRouter = require('./routes/balance.router')
 const userRouter = require('./routes/user.router');
 
 
@@ -40,6 +41,7 @@ app.use('/api/v1/cart' , cartRouter);
 app.use('/api/v1/review' , reviewRouter);
 app.use('/api/v1/category' , categoryRouter);
 app.use('/api/v1/system' , systemRouter);
+app.use('/api/v1/balance', balanceRouter);
 app.use('/api/v1/user' , userRouter);
 
 
