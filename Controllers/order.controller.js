@@ -2,7 +2,27 @@ const moment = require("moment/moment");
 const Order = require("../Models/Order.model");
 const Product = require("../Models/Product.model");
 
+const Balance = require('../Models/Balance.model');
+const System = require('../Models/System.model');
 
+// Function To Create Balance
+const createBalance = async(order)=>{
+    // Get Pecentage0
+  let precentage = await System.find().limit(1).sort({$natural:-1});
+  // Get last record in DB
+  let lastBalance = await Balance.find().limit(1).sort({$natural:-1});
+  
+  // new Order Profit
+  let new_order_profit = ((order.totalPrice) * (precentage[0].precentage / 100)) ;
+  let newBalance = new Balance({
+    total_profit:  (lastBalance[0].total_profit || 0) + new_order_profit,
+    order_id: order._id,
+    order_profit: new_order_profit,
+  });
+
+  await newBalance.save();
+
+}
 
 
 const createOrder = async(req,res)=>{
@@ -15,7 +35,8 @@ const createOrder = async(req,res)=>{
       const finalList = []
 
       for (let i = 0; i < products.length; i++) {
-        sumTotal= products[i].unitPrice * products[i].quantity ;
+        // Updated
+        sumTotal = products[i].quantity||1 * products[i].unitPrice;
         totalPrice += sumTotal ;
         finalList.push(products[i]);
       }
@@ -24,6 +45,9 @@ const createOrder = async(req,res)=>{
       if (!savedOrder) {
         res.status(503).json({message:"Sorry , Please try to re-order agian"});
       }else{
+        // Create Balance Object when add new order
+        await createBalance(savedOrder);
+
         res.status(201).json({message:"Done" , savedOrder });
       }
     

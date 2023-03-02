@@ -64,29 +64,29 @@ let addToCart = async (req, res) => {
     }
 }
 
+// Update From Ahmed Gomaa 
 let saveCart = async (req, res) => {
     try{
         // TODO: add cart
         // Analyze the cart => Find exisiting cart ==> update cart
-        const cart = await Cart.findOne({ user_id: req.params['userId'] });
-
-        const requestBody = req.body.products;
+        const cart = await Cart.findOneAndUpdate({ user_id: req.params['userId'] }, { products: req.body.products },{ new:true, upsert: true });
 
         // Split the string into an array of strings
-        const stringArray = requestBody.split("-");
+        
+        //const stringArray = requestBody.split("-");
 
         // Map the array of strings to an array of objects
-        const objectArray = stringArray.map(item => {
-        const values = item.split(",");
-        return { product_id: values[0], quantity: parseFloat(values[1]) };
-        });
-        
+
+        // const objectArray = stringArray.map(item => {
+        // const values = item.split(",");
+        // return { product_id: values[0], quantity: parseFloat(values[1]) };
+        // });
+        console.log(typeof(requestBody))
         if(cart) {
-            await Cart.findOneAndUpdate(
-            { user_id: req.params['userId'] },
-            { products: objectArray },
-            { new:true, upsert: true });
-            res.status(200).json({ message: "updated cart and saved" });
+            res.status(200).json({ message: "updated cart and saved", cart });
+        }
+        else{
+            res.status(400).json({ message: "Cant Get This Cart" });
         }
     }
     catch(err){

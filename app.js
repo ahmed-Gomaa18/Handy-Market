@@ -28,7 +28,9 @@ const orderRouter = require('./routes/order.router');
 const cartRouter = require('./routes/cart.router');
 const reviewRouter = require('./routes/review.router');
 const categoryRouter = require('./routes/category.router');
-const systemRouter = require('./routes/system.router')
+const systemRouter = require('./routes/system.router');
+const balanceRouter = require('./routes/balance.router')
+const userRouter = require('./routes/user.router');
 
 
 // Main URLs
@@ -41,6 +43,8 @@ app.use('/api/v1/category' , categoryRouter);
 app.use('/api/v1/system' , systemRouter);
 app.use('/api/v1/image/uploads' , express.static(path.join(__dirname ,'./uploads' )));
 
+app.use('/api/v1/balance', balanceRouter);
+app.use('/api/v1/user' , userRouter);
 
 
 const PORT = process.env.PORT || 3000;

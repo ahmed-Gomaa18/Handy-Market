@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
 const CryptoJS = require("crypto-js");
-
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // TODO: create user schema
