@@ -3,14 +3,22 @@ const express = require('express');
 const router = express.Router();
 
 const productController = require('../Controllers/product.controller');
+const { auth } = require('../MiddleWare/auth.md');
+const productEndPoint = require("../utils/product.endPoint");
+const productMiddleWare = require('../MiddleWare/product.md');
+const { HMR, myMulter , multerPath ,multerValidators} = require('../services/multer');
 
-const productMiddleWare = require('../MiddleWare/product.md')
+
 
 // get All Product
 router.get('/', productController.getAllProduct);
 
 // Add New Product    =>  Seller  TODO => [MiddleWare]
-router.post('/', productController.addProduct);
+router.post('/',auth(productEndPoint.product) ,productController.addProduct);
+
+//multer
+router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.product , multerValidators.image).array('image' , 4) , HMR  ,productController.addProductImage);
+
 
 // get all Products Approval Or Not Approval that created By Seller detected by {approval}  TODO => [MiddleWare]
 router.get('/seller/:approval/:id', productController.getProductsApprovalOrNotCreatedby);

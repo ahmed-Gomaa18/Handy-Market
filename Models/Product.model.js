@@ -60,13 +60,10 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     categories_id: { // Under Descus // Update to be required & unique
-        // type: [{
-        //     type: ObjectId,
-        //     ref: 'Categories',
-        //     unique: true,
-        // }],
-        type: [ObjectId],
-        ref: 'Categories',
+        type: [{
+            type: [ObjectId],
+            ref: 'Categories',
+        }],
         required: true,
         validate: {
             validator: function(v){

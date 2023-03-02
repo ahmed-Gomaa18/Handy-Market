@@ -10,9 +10,6 @@ const  createOrderSchema  = require('../schema/order.schema');
 router.post('/create',auth(orderEndPoint.order),validateDto(ajvInstance.compile(createOrderSchema.createOrderSchema)) ,orderController.createOrder);
 
 
-//update
-router.patch('/update/:id',auth(orderEndPoint.order),validateDto(ajvInstance.compile(createOrderSchema.updateOrderSchema)) ,orderController.updateOrder);
-
 //cancel order
 router.delete('/cancel/:id',auth(orderEndPoint.order),orderController.cancelOrder)
 

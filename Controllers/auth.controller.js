@@ -179,7 +179,7 @@ const login = async (req, res)=>{
                                     expiresIn = '7d' 
                                 }
                                 const token = jwt.sign({id:user._id , isLoggedIn:true} , process.env.TOKEN_SIGNATURE , {expiresIn});
-                                const updateStaus = await User.findByIdAndUpdate(user._id , {active:true} , {new:true}).select('-_id active')
+                                const updateStaus = await User.findByIdAndUpdate(user._id , {active:true , _Token:token} , {new:true}).select('-_id active');
                                 res.status(201).json({message:"Login Success" , token , updateStaus});
                             }
                         }  
@@ -266,6 +266,7 @@ const signOut = async(req, res)=>{
         let userLogOut = await User.findByIdAndUpdate(_id , {
             lastSeen :moment().format() ,
             active: false, 
+            _Token:null
         }, {new: true} ).select('-_id active lastSeen');
         if (!userLogOut) {
             res.status(503).json({message:"Sorry , Please try to Logout agian"})

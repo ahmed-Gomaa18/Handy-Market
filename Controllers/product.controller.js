@@ -35,7 +35,14 @@ let getProductsApprovalOrNotCreatedby = async (req, res)=>{
 // Add Product
 let addProduct = (req, res)=>{
 
-    const newProduct= new Product({...req.body})
+
+    const created_by = req.user._id;
+    const {product_name, description, number_of_items ,price, categories_id} = req.body;
+
+
+    const newProduct= new Product({
+        product_name,description, number_of_items ,price, created_by, categories_id
+    })
     newProduct.save()
     .then((data)=>{
         res.status(201).json({message: 'Add Product Success', data})
@@ -44,6 +51,29 @@ let addProduct = (req, res)=>{
         res.status(400).json({message: 'Catch Erro : ' + err})
     })
 
+
+};
+
+//multer
+const addProductImage = async(req,res)=>{
+    try {
+
+        const created_by = req.user._id;
+        const {id} = req.params ;
+        const imagesUrl = [];
+        req.files.forEach(file => {
+            imagesUrl.push(`${req.finalDestination}/${file.filename}`);
+        });
+
+        const product = await Product.findOneAndUpdate({_id:id,created_by}, {photos:imagesUrl}, {new:true});
+
+        res.status(200).json({message: 'Done ' + product})
+
+    } catch (error) {
+        console.log(error);
+        res.status(400).json({message: 'Catch Erro : ' + error})
+
+    }
 }
 
 // Get Product By ID
@@ -181,7 +211,8 @@ module.exports = {
     getProductByID,
     updateApproveProduct,
     deleteProduct,
-    getAllProductNotApproval
+    getAllProductNotApproval,
+    addProductImage
 
 }
 

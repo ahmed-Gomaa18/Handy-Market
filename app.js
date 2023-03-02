@@ -4,7 +4,7 @@ const connectToDB = require('./DB/connectionToDB');
 const bodyparser = require("body-parser");
 
 const cors = require('cors');
-
+const path = require('path');
 require('dotenv').config();
 const app = express();
 
@@ -39,6 +39,8 @@ app.use('/api/v1/cart' , cartRouter);
 app.use('/api/v1/review' , reviewRouter);
 app.use('/api/v1/category' , categoryRouter);
 app.use('/api/v1/system' , systemRouter);
+app.use('/api/v1/image/uploads' , express.static(path.join(__dirname ,'./uploads' )));
+
 
 
 const PORT = process.env.PORT || 3000;
