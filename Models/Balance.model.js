@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const balanceSchema = new mongoose.Schema({
-    total:{
+    total_profit:{
         type: Number,
         default: 0
     },
