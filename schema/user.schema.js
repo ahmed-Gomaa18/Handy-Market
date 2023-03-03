@@ -1,7 +1,7 @@
 const updatePasswordUserSchema = {
     type: "object",
     properties: {
-
+        oldPassword: { type: "string", pattern: '^[A-Z][1-9]{2,5}$' },
         newPassword: { type: "string", pattern: '^[A-Z][1-9]{2,5}$' },
         confirmPassword: {
             type: "string",
@@ -10,7 +10,7 @@ const updatePasswordUserSchema = {
             }
         },
     },
-    required: [],
+    required: ["newPassword","confirmPassword","oldPassword"],
     additionalProperties: false
 
 };
@@ -37,9 +37,20 @@ const updateUserSchema = {
 
 };
 
+const updateSellerShopNameSchema = {
+    type: "object",
+    properties: {
+
+        shop_name: { type: "string", maxLength: 20, minLength: 3 },
+    },
+    required: ["shop_name:"],
+    additionalProperties: false
+
+};
 
 
 module.exports = {
     updatePasswordUserSchema,
-    updateUserSchema 
+    updateUserSchema  ,
+    updateSellerShopNameSchema
 }

@@ -5,18 +5,23 @@ const userEndPoint= require("../utils/user.endPoints");
 const validateDto = require('../MiddleWare/validate-dto');
 const userSchema = require('../schema/user.schema');
 const ajvInstance = require('../schema/ajv-instance');
+
 //get user profile
 router.get("/getUserProfile",auth(userEndPoint.user),userController.getUserProfile);
 //updateUser
 router.patch("/updateUser",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updateUserSchema)) ,userController.updateUser);
 
 //updateUser
-router.post("/UpdatePassword",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updatePasswordUserSchema)),userController.UpdatePassword);
+router.patch("/updatePassword",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updatePasswordUserSchema)),userController.UpdatePassword);
 
-//updateImg
-router.post("/updateImag",auth(userEndPoint.user),userController.updateImage);
+//update Img With multer
+router.patch("/updateImag",auth(userEndPoint.user),userController.updateImage);
 
 
-//delete acc
-router.delete("/deleteUser",auth(userEndPoint.user),userController.deleteUser)
+//deActivatedUser 
+router.patch("/deActivated",auth(userEndPoint.user),userController.deActivatedUser);
+
+//reActive user
+router.patch("/reActivated",userController.reActivatedUser);
+
 module.exports = router;
