@@ -1,5 +1,8 @@
 const User = require("../Models/User.model");
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
+const path = require('path');
+
 
 const getUserProfile = async (req, res)=>{
     try{
@@ -70,22 +73,30 @@ const UpdatePassword = async (req, res) => {
 }
 
 const updateImage = async (req, res) => {
+
     try {
-        const { profile_image } = req.body;
-        const { _id } = req.user;
-        const user = await User.findOne(_id);
-        if (!user) {
-            res.status(400).json({ message: "sorry not a user" });
+        if (req.fileErr) {
+            res.status(406).json({message:"in-valid file format"});
+        } else {
+            const {_id} = req.user
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({message:'in-valid user loggIn'})
+            } else {
+                if (user.profile_image){
+                    const fullPath = '../' + user.profile_image;
+                    fs.unlinkSync(path.join(__dirname , fullPath))
+                }
+                const imageURL = `${req.finalDestination}/${req.file.filename}`;
+                const userUpdate = await User.findByIdAndUpdate(_id ,{profile_image:imageURL} ,{new:true});
+                res.status(201).json({message:"Done updated Profile Picture" , userUpdate})
+            }
         }
-        else {
-            const updatedImg = await User.findOneAndUpdate({ _id: _id },
-                { profile_image }, { new: true })
-            res.status(200).json({ message: "changed successfully" });
-        }
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Catch Error", err })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'Catch Error' , error})
     }
+
 }
 const deActivatedUser = async (req, res) => {
     try {

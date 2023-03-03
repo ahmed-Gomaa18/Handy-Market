@@ -5,6 +5,8 @@ const userEndPoint= require("../utils/user.endPoints");
 const validateDto = require('../MiddleWare/validate-dto');
 const userSchema = require('../schema/user.schema');
 const ajvInstance = require('../schema/ajv-instance');
+const { HMR, myMulter , multerPath ,multerValidators} = require('../services/multer');
+
 
 //get user profile
 router.get("/getUserProfile",auth(userEndPoint.user),userController.getUserProfile);
@@ -15,7 +17,7 @@ router.patch("/updateUser",auth(userEndPoint.user),validateDto(ajvInstance.compi
 router.patch("/updatePassword",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updatePasswordUserSchema)),userController.UpdatePassword);
 
 //update Img With multer
-router.patch("/updateImag",auth(userEndPoint.user),userController.updateImage);
+router.patch("/updateImag",auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('image') , HMR, userController.updateImage);
 
 
 //deActivatedUser 
