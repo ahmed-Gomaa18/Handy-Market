@@ -1,2 +1,2 @@
 # Handy-Market
-ITI Final Project Nodejs 
+ITI Final Project (Server Side) 
