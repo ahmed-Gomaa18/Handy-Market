@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const bcrypt = require('bcryptjs');
-const CryptoJS = require("crypto-js");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 // TODO: create user schema
@@ -104,9 +103,6 @@ const userSchema = new Schema({
 userSchema.pre( 'save' , async function(next){
 
   this.password = await bcrypt.hash(this.password , parseInt(process.env.SALT_ROUND));
-  if (this.phone) {
-      this.phone = CryptoJS.AES.encrypt( this.phone, process.env.ENCRYPTION_SECRETKEY ).toString();
-  }
   next();
 });
 
