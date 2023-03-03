@@ -1,6 +1,5 @@
 const User = require("../Models/User.model");
 const bcrypt = require('bcryptjs');
-const { user } = require("../utils/user.endPoints");
 
 const getUserProfile = async (req, res)=>{
     try{
