@@ -3,7 +3,10 @@ const Product = require('../Models/Product.model');
 // get All Products [approve: true and softDelete: false]
 let getAllProduct = (req, res)=>{
 
-    Product.find({soft_delete: false, product_approval: true}).exec((err, data)=>{
+    Product.find({soft_delete: false, product_approval: true}).populate([{
+        path:"created_by",
+        select:"user_name"
+    }]).exec((err, data)=>{
         if(err){
             res.status(400).json({message: 'Catch Error : ' + err.mesage})
         }
