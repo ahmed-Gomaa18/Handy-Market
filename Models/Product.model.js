@@ -12,13 +12,13 @@ const productSchema = new mongoose.Schema({
     },
     photos:{    // Updated
         type: [String],
-        required: true,
-        validate: {
-            validator: function(v){
-                return Array.isArray(v) && v.length > 0;
-            },
-            message: props => `Products ${props.path} must have at least one photo`
-        }
+        // required: true,
+        // validate: {
+        //     validator: function(v){
+        //         return Array.isArray(v) && v.length > 0;
+        //     },
+        //     message: props => `Products ${props.path} must have at least one photo`
+        // }
 
     },
     description:{

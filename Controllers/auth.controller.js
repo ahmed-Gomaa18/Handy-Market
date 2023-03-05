@@ -43,8 +43,8 @@ const signup = async (req, res)=>{
 
 const sellerSignup = async (req, res)=>{
     try {
-        const {user_name , email , password , age , gender , role , phone , address , full_name , profile_image , shop_name ,  description , confirmPassword} = req.body;
-        const newUser = new User({user_name , email , password , age , role , gender , phone , address , full_name , profile_image ,description ,shop_name});
+        const {user_name , email , password , age , gender , role , phone , address , full_name  , shop_name ,  description , confirmPassword} = req.body;
+        const newUser = new User({user_name , email , password , age , role , gender , phone , address , full_name  ,description ,shop_name});
         const savedUser = await newUser.save();
         if (!savedUser){
             res.status(503).json({message:"Sorry , Please try to signup agian"})

@@ -3,7 +3,8 @@ const Product = require('../Models/Product.model');
 // get All Products [approve: true and softDelete: false]
 let getAllProduct = async (req, res)=>{
     try{
-        let allProduct = await Product.find({soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" });
+        let allProduct = await Product.find({soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",
+        select: "user_name"});
 
         if(allProduct.length == 0){
             res.status(400).json({message: 'No Product approval to show'})

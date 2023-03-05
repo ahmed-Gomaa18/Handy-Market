@@ -1,6 +1,9 @@
 const User = require("../Models/User.model");
 const bcrypt = require('bcryptjs');
-const { user } = require("../utils/user.endPoints");
+const fs = require('fs');
+const path = require('path');
+const Product = require("../Models/Product.model");
+
 
 const getUserProfile = async (req, res)=>{
     try{
@@ -16,7 +19,7 @@ const getUserProfile = async (req, res)=>{
     catch(err){
         res.status(400).json({message: 'Catch Error : ' + err.message})
     }
-}
+};
 
 const updateUser = async (req, res) => {
     try {
@@ -29,16 +32,16 @@ const updateUser = async (req, res) => {
         else {
             const updatedUser = await User.findOneAndUpdate({ _id: _id },
                 { user_name, fullname, address, phone, shop_name }, { new: true })
-            res.status(200).json({ message: "changed successfully" });
+            res.status(200).json({ message: "changed successfully" , updatedUser});
         }
     }
     catch (err) {
 
         res.status(500).json({ message: "Catch Error : " +  err.message })
     }
-}
+};
 
-const UpdatePassword = async (req, res) => {
+const updatePassword = async (req, res) => {
     try {
         const {oldPassword, newPassword,confirmPassword} = req.body;
         const { _id } = req.user;
@@ -52,12 +55,12 @@ const UpdatePassword = async (req, res) => {
             if (!checkPassword) {
                 res.status(400).json({ message: "password is miss match" });
             } else {
-                if (newPassword!=confirmPassword) {
+                if (newPassword != confirmPassword) {
                     res.status(400).json({ message: "confirm password not match new password" });
                 } else {
                 const hashPassword = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUND));
-                const updatePassword = await User.findByIdAndUpdate({ _id},{ newPassword: hashPassword, code: " " }, { new: true });
-                res.status(200).json({ message: "changed successfully" });
+                const updatePassword = await User.findByIdAndUpdate({ _id},{ password: hashPassword}, { new: true });
+                res.status(201).json({ message: "changed successfully" ,updatePassword});
                 }
             }
 
@@ -68,27 +71,36 @@ const UpdatePassword = async (req, res) => {
         console.log(err)
         res.status(500).json({ message: "Catch Error : " + err.message })
     }
-}
-
+};
+//updateImage
 const updateImage = async (req, res) => {
+
     try {
-        const { profile_image } = req.body;
-        const { _id } = req.user;
-        const user = await User.findOne(_id);
-        if (!user) {
-            res.status(400).json({ message: "sorry not a user" });
+        if (req.fileErr) {
+            res.status(406).json({message:"in-valid file format"});
+        } else {
+            const {_id} = req.user
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({message:'in-valid user loggIn'})
+            } else {
+                if (user.profile_image){
+                    const fullPath = '../' + user.profile_image;
+                    fs.unlinkSync(path.join(__dirname , fullPath))
+                }
+                const imageURL = `${req.finalDestination}/${req.file.filename}`;
+                const userUpdate = await User.findByIdAndUpdate(_id ,{profile_image:imageURL} ,{new:true});
+                res.status(201).json({message:"Done updated Profile Picture" , userUpdate})
+            }
         }
-        else {
-            const updatedImg = await User.findOneAndUpdate({ _id: _id },
-                { profile_image }, { new: true })
-            res.status(200).json({ message: "changed successfully" });
-        }
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Catch Error", err })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'Catch Error' , error})
     }
-}
-const deleteUser = async (req, res) => {
+
+};
+//deActivatedUser
+const deActivatedUser = async (req, res) => {
     try {
         const { _id } = req.user;
         const user = await User.findById(_id);
@@ -96,16 +108,253 @@ const deleteUser = async (req, res) => {
             res.status(400).json({ message: "not a user" });
         }
         else {
-            const deleteUser = await User.findOneAndUpdate({ _id: _id }, { soft_delete: true, deActivated: true, active: true }, { new: true })
-            res.status(200).json({ message: "deleted successfully" });
+            const deActivatedUser = await User.findOneAndUpdate({_id}, { deActivated: true, active: false }, { new: true })
+            res.status(200).json({ message: "deActivated successfully",deActivatedUser });
         }
     }
     catch (err) {
 
         res.status(500).json({ message: "Catch Error", err })
     }
+};
+//reActivatedUser
+const reActivatedUser = async (req, res) => {
+    try {
+        const {email} = req.body;
+        const user = await User.findOne({email});
+        if (!user) {
+            res.status(400).json({ message: "not a user" });
+        }
+        else {
+            const reActivatedUser = await User.findOneAndUpdate({email}, {deActivated: false}, { new: true })
+            res.status(200).json({ message: "reActive successfully , login now", reActivatedUser });
+        }
+    }
+    catch (err) {
+
+        res.status(500).json({ message: "Catch Error", err })
+    }
+};
+//whishlist User
+const whishlistUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const productId = req.params.id;
+        const product = await Product.findById(productId);
+        if (!product) {
+            res.status(404).json({ message: "in-valid product id" })
+        } else {
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({ message: "in-valid user id" })
+            } else {
+                const userWhishlist  = user.whishlist.find(product => product == productId);
+                if(userWhishlist){
+                    res.status(400).json({message:"You but that before"});
+                }else{
+                    const updateWhishlist = await User.findByIdAndUpdate({_id} , {$push:{whishlist:productId}} , {new:true});
+                    if (!updateWhishlist) {
+                        res.status(400).json({message:"You do it before"});
+                    } else {
+                        res.status(200).json({message:"Done , Product in wishList"});
+
+                    }
+
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+};
+//unWhishlist User
+const unWhishlistUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const productId = req.params.id;
+        const product = await Product.findById(productId);
+        if (!product) {
+            res.status(404).json({ message: "in-valid product id" })
+        } else {
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({ message: "in-valid user id" })
+            } else {
+                const userWhishlist  = user.whishlist.find(product => product == productId);
+                if(!userWhishlist){
+                    res.status(400).json({message:"Not found in whishlist"});
+                }else{
+                    const updateWhishlist = await User.findByIdAndUpdate({_id} , {$pull:{whishlist:productId}} , {new:true});
+                    if (!updateWhishlist) {
+                        res.status(400).json({message:"filed remove from whishlist"});
+                    } else {
+                        res.status(200).json({message:"Done , remove from wishList"});
+
+                    }
+
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+};
+//favorite User
+const favoriteUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const productId = req.params.id;
+        const product = await Product.findById(productId);
+        if (!product) {
+            res.status(404).json({ message: "in-valid product id" })
+        } else {
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({ message: "in-valid user id" })
+            } else {
+                const userFavorite  = user.favorite.find(product => product == productId);
+                if(userFavorite){
+                    res.status(400).json({message:"You but that before"});
+                }else{
+                    const updateFavorite = await User.findByIdAndUpdate({_id} , {$push:{favorite:productId}} , {new:true});
+                    if (!updateFavorite) {
+                        res.status(400).json({message:"You do it before"});
+                    } else {
+                        res.status(200).json({message:"Done , Product in favorit"});
+
+                    }
+
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+};
+//unfavorite User
+const unFavoriteUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const productId = req.params.id;
+        const product = await Product.findById(productId);
+        if (!product) {
+            res.status(404).json({ message: "in-valid product id" })
+        } else {
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({ message: "in-valid user id" })
+            } else {
+                const userFavorite  = user.favorite.find(product => product == productId);
+                if(!userFavorite){
+                    res.status(400).json({message:"Not found in favorit  list"});
+                }else{
+                    const updateFavorite = await User.findByIdAndUpdate({_id} , {$pull:{favorite:productId}} , {new:true});
+                    if (!updateFavorite) {
+                        res.status(400).json({message:"can't remove it from favorit list"});
+                    } else {
+                        res.status(200).json({message:"Done , remove it from favorit list"});
+
+                    }
+
+                }
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+};
+//subscriptionUser
+const subscriptionUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const userSubscripID = req.params.id;
+        const userSubscrip = await User.findById(userSubscripID);
+        if (!userSubscrip) {
+            res.status(404).json({ message: "in-valid subscrip user id" })
+        } else {
+            if (_id == userSubscripID) {
+                res.status(403).json({ message: "You can't subscrip your self" });
+            } else {
+                const user = await User.findById(_id);
+                if (!user) {
+                    res.status(404).json({ message: "in-valid user id" })
+                } else {
+                    const userSub  = user.subscription.find(userID => userID == userSubscripID);
+                    if(userSub){
+                        res.status(400).json({message:"You subscrip before"});
+                    }else{
+                        const updateSubscription = await User.findByIdAndUpdate({_id} , {$push:{subscription:userSubscripID}} , {new:true});
+                        if (!updateSubscription) {
+                            res.status(400).json({message:"You do it before"});
+                        } else {
+                            res.status(200).json({message:"Done , subscription"});
+                        }
+                    }
+
+                } 
+            }
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+};
+//unSubscriptionUser
+const unSubscriptionUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const userSubscripID = req.params.id;
+        const userSubscrip = await User.findById(userSubscripID);
+        if (!userSubscrip) {
+            res.status(404).json({ message: "in-valid subscrip user id" })
+        } else {
+            const user = await User.findById(_id);
+            if (!user) {
+                res.status(404).json({ message: "in-valid user id" })
+            } else {
+                const userSub  = user.subscription.find(userID => userID == userSubscripID);
+                if(!userSub){
+                    res.status(400).json({message:"can't found in subscription list "});
+                }else{
+                    const updateSubscription = await User.findByIdAndUpdate({_id} , {$pull:{subscription:userSubscripID}} , {new:true});
+                    if (!updateSubscription) {
+                        res.status(400).json({message:"can't remove from subscription list"});
+                    } else {
+                        res.status(200).json({message:"Done , remove from subscription list"});
+                    }
+                }
+
+            } 
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
 }
 
+
 module.exports = {
-    updateUser, UpdatePassword, updateImage, deleteUser ,getUserProfile
+    updateUser,
+    updatePassword,
+    updateImage, 
+    deActivatedUser ,
+    getUserProfile ,
+    reActivatedUser ,
+    whishlistUser ,
+    favoriteUser ,
+    subscriptionUser ,
+    unWhishlistUser ,
+    unFavoriteUser ,
+    unSubscriptionUser
 }
