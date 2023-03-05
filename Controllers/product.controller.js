@@ -7,7 +7,7 @@ let getAllProduct = async (req, res)=>{
         select: "user_name"});
 
         if(allProduct.length == 0){
-            res.status(400).json({message: 'No Product approval to show'})
+            res.status(200).json({message: 'No Product approval to show'})
         }
         else{
             res.status(200).json(allProduct)
