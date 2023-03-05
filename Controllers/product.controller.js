@@ -197,7 +197,7 @@ let deleteProduct = async(req, res)=>{
 // For Admin To get All Products That not Approval
 let getAllProductNotApproval = async(req, res)=>{
     try{
-        let products = await Product.find(product_approval: false});
+        let products = await Product.find({product_approval: false});
         res.status(200).json({products});
     }
     catch(err){
