@@ -1,19 +1,20 @@
 const Product = require('../Models/Product.model');
 
 // get All Products [approve: true and softDelete: false]
-let getAllProduct = (req, res)=>{
+let getAllProduct = async (req, res)=>{
+    try{
+        let allProduct = await Product.find({soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",
+        select: "user_name"});
 
-    Product.find({soft_delete: false, product_approval: true}).populate([{
-        path:"created_by",
-        select:"user_name"
-    }]).exec((err, data)=>{
-        if(err){
-            res.status(400).json({message: 'Catch Error : ' + err.mesage})
+        if(allProduct.length == 0){
+            res.status(400).json({message: 'No Product approval to show'})
         }
         else{
-            res.status(200).json(data)
+            res.status(200).json(allProduct)
         }
-    })
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.mesage})
+    }
 
 }
 
@@ -82,7 +83,7 @@ const addProductImage = async(req,res)=>{
 // Get Product By ID
 let getProductByID = async(req, res)=>{
     try{
-        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: true});
+        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: true}).populate('ratings_id');
         if(product){
             res.status(200).json({product})
         }

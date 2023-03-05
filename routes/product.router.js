@@ -9,12 +9,17 @@ const productMiddleWare = require('../MiddleWare/product.md');
 const { HMR, myMulter , multerPath ,multerValidators} = require('../services/multer');
 
 
+const validateDto = require('../MiddleWare/validate-dto');
+const ajvInstance = require('../schema/ajv-instance');
+const productSchema = require('../schema/product.schema');
+
+
 
 // get All Product
 router.get('/', productController.getAllProduct);
 
 // Add New Product    =>  Seller  TODO => [MiddleWare]
-router.post('/',auth(productEndPoint.product) ,productController.addProduct);
+router.post('/',auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)) ,productController.addProduct);
 
 //multer
 router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.product , multerValidators.image).array('image' , 4) , HMR  ,productController.addProductImage);
@@ -24,7 +29,7 @@ router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.pr
 router.get('/seller/:approval/:id', productController.getProductsApprovalOrNotCreatedby);
 
 // Update Product By Owner Seller 
-router.patch('/seller/:sellerId/update/:productId', productMiddleWare.checkProductOwner, productController.updateProduct);
+router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)), productMiddleWare.checkProductOwner, validateDto(ajvInstance.compile(productSchema.createProduct)), productController.updateProduct);
 
 // get Product By Id
 router.get('/:id', productController.getProductByID);

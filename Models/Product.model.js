@@ -71,6 +71,12 @@ const productSchema = new mongoose.Schema({
             },
             message: props => `Product ${props.path} must have at least one of Categories id`
         }
+    },
+    ratings_id: {
+        type: [{
+            type: ObjectId,
+            ref: 'Reviews',
+        }]
     }
 
 },
