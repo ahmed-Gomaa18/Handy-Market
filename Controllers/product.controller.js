@@ -24,11 +24,10 @@ let getProductsApprovalOrNotCreatedby = async (req, res)=>{
         // Check approval
         let approval = req.params['approval'] == 'true'? true:false;
 
-        let products = await Product.find({created_by: req.params['id'], product_approval: approval});
+        let products = await Product.find({created_by: req.user._id, product_approval: approval});
 
         res.status(200).json({products});
-
-       
+     
 
     }
     catch(err){
@@ -80,12 +79,18 @@ const addProductImage = async(req,res)=>{
     }
 }
 
-// Get Product By ID
+// Get Product By ID With Some Related Category
 let getProductByID = async(req, res)=>{
     try{
-        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: true}).populate('ratings_id');
+        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",
+        select: "user_name"});
         if(product){
-            res.status(200).json({product})
+            let category_id = product.categories_id[0]
+            let relatedProduct = await Product.find({categories_id: {$in: category_id}}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"}).limit(5);
+            let nRelatedProduct = relatedProduct.filter((pro)=>{
+                return pro._id.toString() != product._id.toString();
+            })
+            res.status(200).json({product, nRelatedProduct})
         }
         else{
             res.status(400).json({message: 'May Wrong in Product ID or This Product Not Exist Or Prudct Not Approval'})
