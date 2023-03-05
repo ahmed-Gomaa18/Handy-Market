@@ -56,7 +56,7 @@
       description:{type: "string",maxLength:50 ,minLength:15}
 
     },
-    required: ["user_name" ,"email" , "age" , "gender" , "password" , "role" ," full_name" ,"shop_name" ,"description" ,"address" , "phone" ,"confirmPassword"],
+    required: ["user_name" ,"email" , "age" , "gender" , "password" , "role" ,"full_name" ,"shop_name" ,"description" ,"address" , "phone" ,"confirmPassword"],
     additionalProperties: false
   }
 
