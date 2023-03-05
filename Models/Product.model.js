@@ -61,7 +61,7 @@ const productSchema = new mongoose.Schema({
     },
     categories_id: { // Under Descus // Update to be required & unique
         type: [{
-            type: [ObjectId],
+            type: ObjectId,
             ref: 'Categories',
         }],
         required: true,
@@ -71,6 +71,12 @@ const productSchema = new mongoose.Schema({
             },
             message: props => `Product ${props.path} must have at least one of Categories id`
         }
+    },
+    ratings_id: {
+        type: [{
+            type: ObjectId,
+            ref: 'Reviews',
+        }]
     }
 
 },

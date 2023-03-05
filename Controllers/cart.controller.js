@@ -81,7 +81,7 @@ let saveCart = async (req, res) => {
         // const values = item.split(",");
         // return { product_id: values[0], quantity: parseFloat(values[1]) };
         // });
-        console.log(typeof(requestBody))
+        // console.log(typeof(requestBody))
         if(cart) {
             res.status(200).json({ message: "updated cart and saved", cart });
         }
