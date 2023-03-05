@@ -5,15 +5,6 @@ const productSchema = {
             type: 'string',
             minLength: 3
         },
-        photos: {
-            type: 'array',
-            items: {
-                "type": "string"
-            },
-            minItems: 1,
-            maxItems: 5,
-            uniqueItems: true
-        },
         description: {
             type: 'string',
             minLength: 20
@@ -47,10 +38,6 @@ const productSchema = {
             type: 'boolean',
             default: false
         },
-        created_by: {
-            type: 'string',
-            pattern: '^[a-z0-9]{24}$'
-        },
         categories_id: {
             type: 'array',
             items: {
@@ -61,7 +48,7 @@ const productSchema = {
             uniqueItems: true
         }
     },
-    required: ['product_name', 'photos', 'number_of_items', 'price', 'created_by', 'categories_id'],
+    required: ['product_name', 'photos', 'number_of_items', 'price', 'categories_id'],
     additionalProperties: false
 }
 

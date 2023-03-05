@@ -49,14 +49,14 @@
             building_num: {type:"number"},
       
         },
-        required:["city" , "street" , " building_num"]
+        required:["city" , "street" , "building_num"]
       },
       full_name:{type:"string"},
       shop_name:{type: "string",maxLength:20 ,minLength:3},
-      description:{type: "string",maxLength:50 ,minLength:15}
+      description:{type: "string",minLength:15}
 
     },
-    required: ["user_name" ,"email" , "age" , "gender" , "password" , "role" ," full_name" ,"shop_name" ,"description" ,"address" , "phone" ,"confirmPassword"],
+    required: ["user_name" ,"email" , "age" , "gender" , "password" , "role" ,"full_name" ,"shop_name" ,"description" ,"address" , "phone" ,"confirmPassword"],
     additionalProperties: false
   }
 
