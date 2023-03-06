@@ -1,5 +1,5 @@
 const Product = require('../Models/Product.model');
-
+const User = require('../Models/User.model')
 
 let getnotapprovedProductByID = async(req, res)=>{
     try{
@@ -50,9 +50,51 @@ let updateApproveProduct = async(req, res)=>{
 
 }
 
+let getAllUsers = async (req, res)=>{
+    try{
+        let allUser = await User.find({});
+        if(allUser.length){
+            res.status(200).json(allUser)
+        }else{
+            res.status(200).json(allUser)
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
+let getUserByID = async (req, res)=>{
+    try{
+        let user = await User.findById(req.params['id']);
+        if(user){
+            res.status(200).json(user)
+        }else{
+            res.status(400).json({message: 'May This User Is not Exist'})
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
+let blockUser = async(req, res)=>{
+    try{
+        let blockUser = await User.findByIdAndUpdate(req.params['id'], {isBlocked: true}, {new: true})
+        if(blockUser){
+            res.status(200).json({message: 'This User Was Blocked Successfully', blockUser})
+        }else{
+            res.status(400).json({message: 'May This Blocked User Is not Exist'})
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
 module.exports = {
     getnotapprovedProductByID,
     getAllProductNotApproval,
-    updateApproveProduct
+    updateApproveProduct,
+    getAllUsers,
+    getUserByID,
+    blockUser
 
 }
