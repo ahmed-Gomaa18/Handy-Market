@@ -180,7 +180,7 @@ const login = async (req, res)=>{
                                 }
                                 const token = jwt.sign({id:user._id , isLoggedIn:true} , process.env.TOKEN_SIGNATURE , {expiresIn});
                                 const updateStaus = await User.findByIdAndUpdate(user._id , {active:true , _Token:token} , {new:true}).select('-_id active');
-                                res.status(201).json({message:"Login Success" , token , updateStaus});
+                                res.status(201).json({message:"Login Success" , token , userId: user._id});
                             }
                         }  
                     }

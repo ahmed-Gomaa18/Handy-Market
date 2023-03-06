@@ -22,22 +22,6 @@ const createProduct = {
             type: 'integer',
             default: 0
         },
-        sold_items: {
-            type: 'integer',
-            default: 0
-        },
-        sold_items_per_mounth: {
-            type: 'integer',
-            default: 0
-        },
-        product_approval: {
-            type: 'boolean',
-            default: false
-        },
-        soft_delete: {
-            type: 'boolean',
-            default: false
-        },
         categories_id: {
             type: 'array',
             items: {
@@ -48,7 +32,7 @@ const createProduct = {
             uniqueItems: true
         }
     },
-    required: ['product_name', 'photos', 'number_of_items', 'price', 'categories_id'],
+    required: ['product_name', 'number_of_items', 'price', 'categories_id', 'description'],
     additionalProperties: false
 }
 
