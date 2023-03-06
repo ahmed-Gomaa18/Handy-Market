@@ -1,5 +1,8 @@
 const Product = require('../Models/Product.model');
-const User = require('../Models/User.model')
+const User = require('../Models/User.model');
+const Balance = require('../Models/Balance.model');
+const Category = require('../Models/Category.model');
+
 
 let getnotapprovedProductByID = async(req, res)=>{
     try{
@@ -89,12 +92,59 @@ let blockUser = async(req, res)=>{
     }
 }
 
+let allBalance = async(req, res)=>{
+    try{
+        let allBalance = await Balance.find({}).populate('order_id');
+        if(!allBalance){
+            res.status(400).json({message: 'May Error Happen When Get All Balance'})
+        }else{
+            res.status(200).json(allBalance)
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
+let createCategory = (req, res)=>{
+    let user_id = req.user._id;
+    let newCategory = new Category({user_id, name:req.body.name});
+    newCategory.save()
+    .then(()=>{
+        res.status(200).json({message: 'created Category SuccessFully', newCategory})
+    })
+    .catch((err)=>{
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    })
+}
+
+let UpdateCategory = async(req, res)=>{
+    try{
+
+        let category = await Category.findByIdAndUpdate(req.params['id'], {name: req.body.name}, {new: true});
+        if(category){
+            res.status(200).json({message: 'Updated Category SuccessFully', category})
+        }
+        else{
+            res.status(400).json({message: 'May Be Wrong happen While Update'})
+        }
+    }
+    catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }   
+
+
+}
+
+
 module.exports = {
     getnotapprovedProductByID,
     getAllProductNotApproval,
     updateApproveProduct,
     getAllUsers,
     getUserByID,
-    blockUser
+    blockUser,
+    allBalance,
+    createCategory,
+    UpdateCategory
 
 }

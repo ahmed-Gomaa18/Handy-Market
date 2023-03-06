@@ -14,6 +14,9 @@ const validateDto = require('../MiddleWare/validate-dto');
 const ajvInstance = require('../schema/ajv-instance');
 const productSchema = require('../schema/product.schema');
 
+const categoryMiddleWare = require('../MiddleWare/category.md'); 
+const { route } = require('./product.router');
+
 
 // Product Aprove for Admin  
 router.patch('/approval/:id', auth(adminEndPoint.admin),adminController.updateApproveProduct);
@@ -30,5 +33,14 @@ router.get('/user/:id', auth(adminEndPoint.admin), adminController.getUserByID);
 
 // Block Specific User By ID
 router.patch('/user/block/:id', auth(adminEndPoint.admin), adminController.blockUser);
+
+// Get All Balance
+router.get('/balance', auth(adminEndPoint.admin), adminController.allBalance);
+
+// Create Category
+router.post('/createCategory', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.createCategory)
+
+// Updaet Category
+router.patch('/category/:id', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.UpdateCategory)
 
 module.exports = router;
