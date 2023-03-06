@@ -1,46 +1,28 @@
 const Product = require('../Models/Product.model');
+const filter = require('../services/filter')
 
 // get All Products [approve: true and softDelete: false]
 let getAllProduct = async (req, res)=>{
     try{
-        console.log(filter(req.query))
-        // For Filter
-        let {search, categories} = req.query
-        let category = categories? categories.split(','): [];
+        // Check if send query to filter or not
+        let productFilter = req.query == {} ? {} : filter(req.query)
+
+        let allProduct = await Product.find({soft_delete: false, product_approval: true}).find(productFilter)
+        .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
+        .populate({path:'categories_id', select: 'name'});
         
-        // Check if user send category or not 
-        if (category.length == 0){
-
-            let allProduct = await Product.find({soft_delete: false, product_approval: true, product_name: {$regex: search, $options: 'i'}})
-            .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
-            .populate({path:'categories_id', select: 'name'});
-
-            if(allProduct.length == 0){
-                res.status(200).json(allProduct)
-            }
-            else{
-                res.status(200).json(allProduct)
-            }
-
+        if(allProduct.length == 0){
+            res.status(200).json(allProduct)
         }
         else{
-            
-            let allProduct = await Product.find({soft_delete: false, product_approval: true, product_name: {$regex: search, $options: 'i'}})
-            .where("categories_id").in(category)
-            .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
-            .populate({path:'categories_id', select: 'name'});
-            
-            if(allProduct.length == 0){
-                res.status(200).json(allProduct)
-            }
-            else{
-                res.status(200).json(allProduct)
-            }
-            
+            res.status(200).json(allProduct)
         }
-    }catch(err){
+    }
+    catch(err){
         res.status(400).json({message: 'Catch Error : ' + err.mesage})
     }
+
+    
 
 }
 
