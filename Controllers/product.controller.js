@@ -3,14 +3,40 @@ const Product = require('../Models/Product.model');
 // get All Products [approve: true and softDelete: false]
 let getAllProduct = async (req, res)=>{
     try{
-        let allProduct = await Product.find({soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",
-        select: "user_name"}).populate({path:'categories_id', select: 'name'});
+        console.log(filter(req.query))
+        // For Filter
+        let {search, categories} = req.query
+        let category = categories? categories.split(','): [];
+        
+        // Check if user send category or not 
+        if (category.length == 0){
 
-        if(allProduct.length == 0){
-            res.status(200).json({message: 'No Product approval to show'})
+            let allProduct = await Product.find({soft_delete: false, product_approval: true, product_name: {$regex: search, $options: 'i'}})
+            .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
+            .populate({path:'categories_id', select: 'name'});
+
+            if(allProduct.length == 0){
+                res.status(200).json(allProduct)
+            }
+            else{
+                res.status(200).json(allProduct)
+            }
+
         }
         else{
-            res.status(200).json(allProduct)
+            
+            let allProduct = await Product.find({soft_delete: false, product_approval: true, product_name: {$regex: search, $options: 'i'}})
+            .where("categories_id").in(category)
+            .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
+            .populate({path:'categories_id', select: 'name'});
+            
+            if(allProduct.length == 0){
+                res.status(200).json(allProduct)
+            }
+            else{
+                res.status(200).json(allProduct)
+            }
+            
         }
     }catch(err){
         res.status(400).json({message: 'Catch Error : ' + err.mesage})
