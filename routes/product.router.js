@@ -31,8 +31,6 @@ router.get('/seller/:approval/:id', productController.getProductsApprovalOrNotCr
 // Update Product By Owner Seller 
 router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)), productMiddleWare.checkProductOwner, validateDto(ajvInstance.compile(productSchema.createProduct)), productController.updateProduct);
 
-// get all not approval product for Admin only  TODO => [MiddleWare]
-router.get('/notApproval', productController.getAllProductNotApproval)
 
 // get Product By Id
 router.get('/:id', productController.getProductByID);
@@ -40,13 +38,8 @@ router.get('/:id', productController.getProductByID);
 // delete Product by ID From Seller
 router.delete('/seller/:sellerId/delete/:productId', productMiddleWare.checkProductOwner, productController.deleteProduct);
 
-// delete Product By Admin TODO => [MiddleWare]
+// delete Product By seller TODO => [MiddleWare]
 router.delete('/delete/:productId', productController.deleteProduct);
-
-// Product Aprove for Admin  TODO => [MiddleWare]
-router.patch('/approval/:id', productController.updateApproveProduct);
-
-
 
 
 module.exports = router;
