@@ -1,8 +1,7 @@
 const {roles} = require('../MiddleWare/auth.md')
 
 const endPoint = {
-    product :[roles.Seller],
-    admin : [roles.Admin]
+    admin : [roles.Admin],
 
 }
 

@@ -31,7 +31,7 @@ const categoryRouter = require('./routes/category.router');
 const systemRouter = require('./routes/system.router');
 const balanceRouter = require('./routes/balance.router')
 const userRouter = require('./routes/user.router');
-
+const adminRouter = require('./routes/admin.router');
 
 // Main URLs
 app.use('/api/v1/auth' , authRouter);
@@ -45,7 +45,7 @@ app.use('/api/v1/image/uploads' , express.static(path.join(__dirname ,'./uploads
 
 app.use('/api/v1/balance', balanceRouter);
 app.use('/api/v1/user' , userRouter);
-
+app.use('/api/v1/admin', adminRouter);
 
 const PORT = process.env.PORT || 3000;
 

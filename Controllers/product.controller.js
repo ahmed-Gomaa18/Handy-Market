@@ -192,7 +192,7 @@ let updateApproveProduct = async(req, res)=>{
 
 }
 
-//delete Product By Both Admin Or Seller Handel By Middleware
+//delete Product By Seller Handel By Middleware
 let deleteProduct = async(req, res)=>{
     try{
         let productDeleted = await Product.findByIdAndUpdate(req.params['productId'], {soft_delete: true}, {new: true});
@@ -210,13 +210,30 @@ let deleteProduct = async(req, res)=>{
 // For Admin To get All Products That not Approval
 let getAllProductNotApproval = async(req, res)=>{
     try{
-        let products = await Product.find({product_approval: false});
+        let products = await Product.find({product_approval: false}).populate({path: "created_by",select: "user_name"});
         res.status(200).json({products});
     }
     catch(err){
         res.status(400).json({message: 'Catch Error : ' + err})
     }
 }
+
+let getnotapprovedProductByID = async(req, res)=>{
+    try{
+        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: false}).populate('ratings_id');
+        if(product){
+            res.status(200).json({product})
+        }
+        else{
+            res.status(400).json({message: 'May Wrong in Product ID or This Product Not Exist Or Prudct Not Approval'})
+        }
+    }
+    catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+    
+}
+
 
 
 
@@ -229,7 +246,8 @@ module.exports = {
     updateApproveProduct,
     deleteProduct,
     getAllProductNotApproval,
-    addProductImage
+    addProductImage,
+    getnotapprovedProductByID
 
 }
 
