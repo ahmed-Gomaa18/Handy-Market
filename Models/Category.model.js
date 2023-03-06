@@ -7,10 +7,10 @@ const categorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    category_image:{
-        type: String,
-        required: true
-    },
+    // category_image:{
+    //     type: String,
+    //     required: true
+    // },
     user_id: { // Under Descus
         type: ObjectId,  
         ref: 'Users',
