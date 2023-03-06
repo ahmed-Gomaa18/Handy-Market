@@ -29,7 +29,7 @@ router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.pr
 router.get('/seller/:approval', productController.getProductsApprovalOrNotCreatedby);
 
 // Update Product By Owner Seller 
-router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)), productMiddleWare.checkProductOwner, validateDto(ajvInstance.compile(productSchema.createProduct)), productController.updateProduct);
+router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.updateProduct)), productMiddleWare.checkProductOwner, productController.updateProduct);
 
 
 // get Product By Id
