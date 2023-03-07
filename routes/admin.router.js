@@ -32,7 +32,7 @@ router.get('/allUsers', auth(adminEndPoint.admin), adminController.getAllUsers);
 router.get('/user/:id', auth(adminEndPoint.admin), adminController.getUserByID);
 
 // Block Specific User By ID
-router.patch('/user/block/:id', auth(adminEndPoint.admin), adminController.blockUser);
+router.patch('/user/block/:Block/:id', auth(adminEndPoint.admin), adminController.blockUser);
 
 // Get All Balance
 router.get('/balance', auth(adminEndPoint.admin), adminController.allBalance);
