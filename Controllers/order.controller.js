@@ -11,11 +11,16 @@ const createBalance = async(order)=>{
   let precentage = await System.find().limit(1).sort({$natural:-1});
   // Get last record in DB
   let lastBalance = await Balance.find().limit(1).sort({$natural:-1});
-  
+  let lastBalanceBella;
+   if (lastBalance.length) {
+    lastBalanceBella = lastBalance[0].total_profit;
+    }else{
+    lastBalanceBella = 0
+    }
   // new Order Profit
   let new_order_profit = ((order.totalPrice) * (precentage[0].precentage / 100)) ;
   let newBalance = new Balance({
-    total_profit:  (lastBalance[0].total_profit || 0) + new_order_profit,
+    total_profit:  lastBalanceBella + new_order_profit,
     order_id: order._id,
     order_profit: new_order_profit,
   });

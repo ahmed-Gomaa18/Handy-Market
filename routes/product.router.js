@@ -25,11 +25,12 @@ router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.pr
 
 
 
-// get all Products Approval Or Not Approval that created By Seller detected by {approval}  TODO => [MiddleWare]
-router.get('/seller/:approval', productController.getProductsApprovalOrNotCreatedby);
+// get all Products Approval Or Not Approval that created By Seller detected by {approval}
+router.get('/seller/:approval', auth(productEndPoint.product), productController.getProductsApprovalOrNotCreatedby);
+
 
 // Update Product By Owner Seller 
-router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)), productMiddleWare.checkProductOwner, validateDto(ajvInstance.compile(productSchema.createProduct)), productController.updateProduct);
+router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.updateProduct)), productMiddleWare.checkProductOwner, productController.updateProduct);
 
 
 // get Product By Id

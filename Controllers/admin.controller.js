@@ -81,7 +81,11 @@ let getUserByID = async (req, res)=>{
 
 let blockUser = async(req, res)=>{
     try{
-        let blockUser = await User.findByIdAndUpdate(req.params['id'], {isBlocked: true}, {new: true})
+        console.log(req.params['Block'] )
+        let block = req.params['Block'] == 'true'? true:false;
+
+        let blockUser = await User.findByIdAndUpdate(req.params['id'], {isBlocked: block}, {new: true})
+
         if(blockUser){
             res.status(200).json({message: 'This User Was Blocked Successfully', blockUser})
         }else{

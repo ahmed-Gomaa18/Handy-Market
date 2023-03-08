@@ -57,7 +57,7 @@ let getProductsApprovalOrNotCreatedby = async (req, res)=>{
         // Check approval
         let approval = req.params['approval'] == 'true'? true:false;
 
-        let products = await Product.find({created_by: req.user._id, product_approval: approval});
+        let products = await Product.find({created_by: req.user._id, product_approval: approval , soft_delete: false});
 
         res.status(200).json({products});
      
