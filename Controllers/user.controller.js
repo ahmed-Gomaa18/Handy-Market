@@ -23,7 +23,7 @@ const getUserProfile = async (req, res)=>{
 
 const updateUser = async (req, res) => {
     try {
-        const { user_name, fullname, address, phone, shop_name } = req.body;
+        const { user_name, fullname, address, phone, shop_name ,description } = req.body;
         const { _id } = req.user;
         const userData = await User.findById(_id);
         if (!userData) {
@@ -31,7 +31,7 @@ const updateUser = async (req, res) => {
         }
         else {
             const updatedUser = await User.findOneAndUpdate({ _id: _id },
-                { user_name, fullname, address, phone, shop_name }, { new: true })
+                { user_name, fullname, address, phone, shop_name ,description }, { new: true })
             res.status(200).json({ message: "changed successfully" , updatedUser});
         }
     }
