@@ -1,6 +1,31 @@
 const Product = require('../Models/Product.model');
 const filter = require('../services/filter')
 
+
+// Test
+let addProduct = (req, res)=>{
+
+    const created_by = req.user._id;
+    const {product_name, description, number_of_items ,price, discount, categories_id} = req.body;
+    const imagesUrl = [];
+    req.files.forEach(file => {
+        imagesUrl.push(`${req.protocol}://${req.hostname}:${process.env.PORT || 3000}/api/v1/image${req.finalDestination}/${file.filename}`);
+    });
+
+    const newProduct= new Product({
+        product_name,description, number_of_items ,price, created_by, categories_id, discount, photos: imagesUrl
+    })
+    newProduct.save()
+    .then((data)=>{
+        res.status(201).json({message: 'Add Product Success', data})
+    })
+    .catch((err)=>{
+        res.status(400).json({message: 'Catch Erro : ' + err.message})
+    })
+
+};
+
+
 // get All Products [approve: true and softDelete: false]
 let getAllProduct = async (req, res)=>{
     try{
@@ -43,28 +68,6 @@ let getProductsApprovalOrNotCreatedby = async (req, res)=>{
     }
 }
 
-// Add Product
-let addProduct = (req, res)=>{
-
-
-    const created_by = req.user._id;
-    const {product_name, description, number_of_items ,price, categories_id} = req.body;
-
-
-    const newProduct= new Product({
-        product_name,description, number_of_items ,price, created_by, categories_id
-    })
-    newProduct.save()
-    .then((data)=>{
-        res.status(201).json({message: 'Add Product Success', data})
-    })
-    .catch((err)=>{
-        res.status(400).json({message: 'Catch Erro : ' + err})
-    })
-
-
-};
-
 //multer
 const addProductImage = async(req,res)=>{
     try {
@@ -78,7 +81,12 @@ const addProductImage = async(req,res)=>{
 
         const product = await Product.findOneAndUpdate({_id:id,created_by}, {photos:imagesUrl}, {new:true});
 
-        res.status(200).json({message: 'Done ' + product})
+        if(product){
+            res.status(200).json({message: 'Done Update Product image' , product})
+        }else{
+            res.status(400).json({message: 'May be Wrong Happen While Update Product'})
+        }
+        
 
     } catch (error) {
         console.log(error);
@@ -118,7 +126,7 @@ let updateProduct = async(req, res)=>{
             let product = await Product.findById(req.params['productId']);
             
             if (product.product_name == req.body.product_name){
-                let product = await Product.findOneAndUpdate(req.params['productId'], {...req.body}, {new:true});
+                let product = await Product.findOneAndUpdate({_id: req.params['productId']}, {...req.body}, {new:true});
                 if(product){
                     res.status(200).json({product})
                 }
@@ -139,7 +147,7 @@ let updateProduct = async(req, res)=>{
                 }
                 else{
 
-                    let product = await Product.findOneAndUpdate(req.params['productId'], {...req.body}, {new:true});
+                    let product = await Product.findOneAndUpdate({_id: req.params['productId']}, {...req.body}, {new:true});
                     if(product){
                         res.status(200).json({product})
                     }
@@ -152,7 +160,7 @@ let updateProduct = async(req, res)=>{
             }
         }
         else{
-            let product = await Product.findOneAndUpdate(req.params['productId'], {...req.body}, {new:true});
+            let product = await Product.findOneAndUpdate({_id: req.params['productId']}, {...req.body}, {new:true});
             if(product){
                 res.status(200).json({product})
             }

@@ -6,7 +6,7 @@ function validateDto(ajvValidate) {
         const valid = ajvValidate(req.body);
         if (!valid){
           const errors = ajvValidate.errors;
-          res.status(400).json(errors);
+          res.status(400).json({message: 'Error From Validation ' + errors});
         }else{
             next();
         }
