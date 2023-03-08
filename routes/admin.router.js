@@ -23,8 +23,9 @@ router.patch('/approval/:id', auth(adminEndPoint.admin),adminController.updateAp
 
 // get all not approval product for Admin only  
 router.get('/notApproval', auth(adminEndPoint.admin),adminController.getAllProductNotApproval);
+
 //get not approved product by id
-router.get('/notApproval/:id', auth(adminEndPoint.admin),adminController.getAllProductNotApproval);
+router.get('/notApproval/:id', auth(adminEndPoint.admin),adminController.getnotapprovedProductByID);
 
 // Get All Users
 router.get('/allUsers', auth(adminEndPoint.admin), adminController.getAllUsers);
