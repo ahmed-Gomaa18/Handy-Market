@@ -14,19 +14,20 @@ const ajvInstance = require('../schema/ajv-instance');
 const productSchema = require('../schema/product.schema');
 
 
+// Add New Product With Image
+router.post('/', auth(productEndPoint.product), myMulter( multerPath.product , multerValidators.image).array('photos' , 4) , HMR  ,productController.addProduct); // Not we Send Form Data To send whole product at one time  //validateDto(ajvInstance.compile(productSchema.createProduct)), 
 
 // get All Product
 router.get('/', productController.getAllProduct);
-
-// Add New Product    =>  Seller  TODO => [MiddleWare]
-router.post('/',auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.createProduct)) ,productController.addProduct);
 
 //multer
 router.patch('/image/:id',auth(productEndPoint.product) ,myMulter( multerPath.product , multerValidators.image).array('image' , 4) , HMR  ,productController.addProductImage);
 
 
+
 // get all Products Approval Or Not Approval that created By Seller detected by {approval}
 router.get('/seller/:approval', auth(productEndPoint.product), productController.getProductsApprovalOrNotCreatedby);
+
 
 // Update Product By Owner Seller 
 router.patch('/seller/:sellerId/update/:productId', auth(productEndPoint.product) , validateDto(ajvInstance.compile(productSchema.updateProduct)), productMiddleWare.checkProductOwner, productController.updateProduct);

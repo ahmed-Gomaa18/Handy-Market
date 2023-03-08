@@ -51,8 +51,8 @@ function myMulter(customPath , customValidator) {
          cb(null , false)
         }
     }
-
-   const upload = multer({dest:fullPath ,limits:{fileSize: 625000} , fileFilter , storage })
+                                                // add 00 to file size
+   const upload = multer({dest:fullPath ,limits:{fileSize: 62500000} , fileFilter , storage })
    return upload ;
 }
 
