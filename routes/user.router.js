@@ -35,6 +35,9 @@ router.patch("/whishlist/:id",auth(userEndPoint.customer),userController.whishli
 //unwhishlist User
 router.patch("/unWhishlist/:id",auth(userEndPoint.customer),userController.unWhishlistUser);
 
+//get favorit of user
+router.get("/favorit/",auth(userEndPoint.customer),userController.getfavoriteUserList);
+
 //favoriteUser
 router.patch("/favorit/:id",auth(userEndPoint.customer),userController.favoriteUser);
 

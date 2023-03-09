@@ -232,6 +232,34 @@ const unWhishlistUser = async(req,res)=>{
 
     }
 };
+
+const getfavoriteUserList = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id favorite');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.favorite.length > 0) {
+                res.status(405).json({message:"You Didn't have products in favorite laist"})
+            } else {
+                const {favorite} = user;
+                let favoriteProducts = [];
+                for (let i = 0; i < favorite.length; i++) {
+                    let product = await Product.findById({_id:favorite[i]});
+                    favoriteProducts.push(product);
+                }
+                res.status(200).json({message:'Done' , favoriteProducts})
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+}
+
 //favorite User
 const favoriteUser = async(req,res)=>{
     try {
@@ -386,5 +414,6 @@ module.exports = {
     unWhishlistUser ,
     unFavoriteUser ,
     unSubscriptionUser ,
-    getWhislist
+    getWhislist ,
+    getfavoriteUserList
 }
