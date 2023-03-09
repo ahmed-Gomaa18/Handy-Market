@@ -135,6 +135,35 @@ const reActivatedUser = async (req, res) => {
         res.status(500).json({ message: "Catch Error", err })
     }
 };
+
+//get whishlist
+const getWhislist = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id whishlist');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.whishlist.length > 0) {
+                res.status(405).json({message:"You Didn't have products in wishlist"})
+            } else {
+                const {whishlist} = user;
+                let wishListProducts = [];
+                for (let i = 0; i < whishlist.length; i++) {
+                    let product = await Product.findById({_id:whishlist[i]});
+                    wishListProducts.push(product);
+                }
+                res.status(200).json({message:'Done' , wishListProducts})
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+}
+
 //whishlist User
 const whishlistUser = async(req,res)=>{
     try {
@@ -356,5 +385,6 @@ module.exports = {
     subscriptionUser ,
     unWhishlistUser ,
     unFavoriteUser ,
-    unSubscriptionUser
+    unSubscriptionUser ,
+    getWhislist
 }
