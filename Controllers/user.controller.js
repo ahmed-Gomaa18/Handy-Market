@@ -288,7 +288,7 @@ const favoriteUser = async(req,res)=>{
                 if(userFavorite){
                     res.status(400).json({message:"You but that before"});
                 }else{
-                    const updateFavorite = await User.findByIdAndUpdate({_id,soft_delete:false} , {$push:{favorite:productId}} , {new:true});
+                    const updateFavorite = await User.findByIdAndUpdate({_id} , {$push:{favorite:productId}} , {new:true});
                     if (!updateFavorite) {
                         res.status(400).json({message:"You do it before"});
                     } else {
