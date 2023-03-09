@@ -150,10 +150,16 @@ const getWhislist = async(req,res)=>{
                 const {whishlist} = user;
                 let wishListProducts = [];
                 for (let i = 0; i < whishlist.length; i++) {
-                    let product = await Product.findById({_id:whishlist[i]});
-                    wishListProducts.push(product);
+                    let product = await Product.findOne({_id:whishlist[i],soft_delete:false});
+                    if(product != null)
+                     wishListProducts.push(product);
                 }
-                res.status(200).json({message:'Done' , wishListProducts})
+                if (wishListProducts.length > 0) {
+                    res.status(200).json({message:'Done' , wishListProducts})
+                } else {
+                    res.status(405).json({message:'Sorry your product in wishList is deleted' , wishListProducts})
+
+                }
             }
 
         }
@@ -233,6 +239,7 @@ const unWhishlistUser = async(req,res)=>{
     }
 };
 
+//get favoriteList User
 const getfavoriteUserList = async(req,res)=>{
     try {
         const {_id}= req.user;
@@ -246,10 +253,14 @@ const getfavoriteUserList = async(req,res)=>{
                 const {favorite} = user;
                 let favoriteProducts = [];
                 for (let i = 0; i < favorite.length; i++) {
-                    let product = await Product.findById({_id:favorite[i]});
-                    favoriteProducts.push(product);
+                    let product = await Product.findOne({_id:favorite[i],soft_delete:false});
+                    if(product != null ) favoriteProducts.push(product);
                 }
-                res.status(200).json({message:'Done' , favoriteProducts})
+                if (favoriteProducts.length > 0) {
+                    res.status(200).json({message:'Done' , favoriteProducts})
+                } else {
+                    res.status(405).json({message:'Sorry your product in favorite is deleted'})
+                }
             }
 
         }
@@ -277,7 +288,7 @@ const favoriteUser = async(req,res)=>{
                 if(userFavorite){
                     res.status(400).json({message:"You but that before"});
                 }else{
-                    const updateFavorite = await User.findByIdAndUpdate({_id} , {$push:{favorite:productId}} , {new:true});
+                    const updateFavorite = await User.findByIdAndUpdate({_id,soft_delete:false} , {$push:{favorite:productId}} , {new:true});
                     if (!updateFavorite) {
                         res.status(400).json({message:"You do it before"});
                     } else {
@@ -328,6 +339,40 @@ const unFavoriteUser = async(req,res)=>{
 
     }
 };
+
+//get Subscription list User
+const getSubscriptionUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id subscription');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.subscription.length > 0) {
+                res.status(405).json({message:"You Didn't have any user in subscription laist"})
+            } else {
+                const {subscription} = user;
+                let subscriptionSeller = [];
+                for (let i = 0; i < subscription.length; i++) {
+                    let seller = await User.findOne({_id:subscription[i],soft_delete:false}).select('-_id user_name shop_name description profile_image ');
+                    if(seller != null)
+                    subscriptionSeller.push(seller);
+                }
+                if (subscriptionSeller.length > 0) {
+                    res.status(200).json({message:'Done' , subscriptionSeller})
+                } else {
+                    res.status(405).json({message:'Sorry your user in subscription is deleted'})
+                }
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Catch Error", error })
+
+    }
+}
+
 //subscriptionUser
 const subscriptionUser = async(req,res)=>{
     try {
@@ -415,5 +460,6 @@ module.exports = {
     unFavoriteUser ,
     unSubscriptionUser ,
     getWhislist ,
-    getfavoriteUserList
+    getfavoriteUserList ,
+    getSubscriptionUser
 }

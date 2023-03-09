@@ -44,6 +44,9 @@ router.patch("/favorit/:id",auth(userEndPoint.customer),userController.favoriteU
 //unfavorite User
 router.patch("/unfavorit/:id",auth(userEndPoint.customer),userController.unFavoriteUser);
 
+//get subscription list
+router.get("/subscription/",auth(userEndPoint.customer),userController.getSubscriptionUser);
+
 //subscription User
 router.patch("/subscription/:id",auth(userEndPoint.customer),userController.subscriptionUser);
 
