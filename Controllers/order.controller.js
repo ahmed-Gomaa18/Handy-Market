@@ -29,6 +29,21 @@ const createBalance = async(order)=>{
 
 }
 
+const silodItemProduct = async(products)=>{
+
+  for (let i = 0; i < products.length; i++) {
+    const product = await Product.findById({_id:products[i].product_id});
+    if(product){
+         let productQun = product.number_of_items - products[i].quantity;
+         let productSolid = product.sold_items + products[i].quantity;
+          await Product.findByIdAndUpdate({_id:product._id},
+         {number_of_items: productQun,sold_items:productSolid},{new:true})
+
+
+    }
+  }
+    
+}
 
 const createOrder = async(req,res)=>{
     try {
@@ -40,8 +55,8 @@ const createOrder = async(req,res)=>{
       const finalList = []
 
       for (let i = 0; i < products.length; i++) {
-        // Updated
-        sumTotal = products[i].quantity||1 * products[i].unitPrice;
+        // Updated salsabeal
+        sumTotal = products[i].quantity * products[i].unitPrice;
         totalPrice += sumTotal ;
         finalList.push(products[i]);
       }
@@ -52,6 +67,7 @@ const createOrder = async(req,res)=>{
       }else{
         // Create Balance Object when add new order
         await createBalance(savedOrder);
+        await silodItemProduct(savedOrder.products)
 
         res.status(201).json({message:"Done" , savedOrder });
       }
