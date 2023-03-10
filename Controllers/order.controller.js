@@ -55,8 +55,8 @@ const createOrder = async(req,res)=>{
       const finalList = []
 
       for (let i = 0; i < products.length; i++) {
-        // Updated salsabeal
-        sumTotal = products[i].quantity * products[i].unitPrice;
+        // Updated
+        sumTotal = (products[i].quantity || 1 ) * products[i].unitPrice;
         totalPrice += sumTotal ;
         finalList.push(products[i]);
       }
