@@ -157,7 +157,7 @@ const getWhislist = async(req,res)=>{
                 if (wishListProducts.length > 0) {
                     res.status(200).json({message:'Done' , wishListProducts})
                 } else {
-                    res.status(204).json({message:'Sorry your product in wishList is deleted' , wishListProducts})
+                    res.status(200).json({message:'Sorry your product in wishList is deleted' , wishListProducts})
 
                 }
             }
