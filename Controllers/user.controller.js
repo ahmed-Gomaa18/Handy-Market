@@ -95,7 +95,7 @@ const updateImage = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:'Catch Error' , error})
+        res.status(500).json({message:'Catch Error : ' + error.message})
     }
 
 };
@@ -114,7 +114,7 @@ const deActivatedUser = async (req, res) => {
     }
     catch (err) {
 
-        res.status(500).json({ message: "Catch Error", err })
+        res.status(500).json({ message: "Catch Error : " + err.message })
     }
 };
 //reActivatedUser
@@ -132,7 +132,7 @@ const reActivatedUser = async (req, res) => {
     }
     catch (err) {
 
-        res.status(500).json({ message: "Catch Error", err })
+        res.status(500).json({ message: "Catch Error : " + err.message })
     }
 };
 
@@ -165,7 +165,7 @@ const getWhislist = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 }
@@ -200,7 +200,7 @@ const whishlistUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 };
@@ -234,7 +234,7 @@ const unWhishlistUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 };
@@ -266,7 +266,7 @@ const getfavoriteUserList = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 }
@@ -301,7 +301,7 @@ const favoriteUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 };
@@ -335,7 +335,7 @@ const unFavoriteUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 };
@@ -368,7 +368,7 @@ const getSubscriptionUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 }
@@ -406,7 +406,7 @@ const subscriptionUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 };
@@ -440,7 +440,7 @@ const unSubscriptionUser = async(req,res)=>{
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "Catch Error", error })
+        res.status(500).json({message:'Catch Error : ' + error.message})
 
     }
 }
