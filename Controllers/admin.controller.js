@@ -55,7 +55,7 @@ let updateApproveProduct = async(req, res)=>{
 
 let getAllUsers = async (req, res)=>{
     try{
-        let allUser = await User.find({});
+        let allUser = await User.find({_id:{$ne:req.user._id}});
         if(allUser.length){
             res.status(200).json(allUser)
         }else{

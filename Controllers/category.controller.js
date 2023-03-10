@@ -2,6 +2,7 @@ const Category = require('../Models/Category.model');
 
 
 let createCategory = (req, res)=>{
+  try {
     let user_id = req.user._id;
     let newCategory = new Category({user_id, name:req.body.name});
     newCategory.save()
@@ -11,6 +12,10 @@ let createCategory = (req, res)=>{
     .catch((err)=>{
         res.status(400).json({message: 'Catch Error : ' + err.message})
     })
+   } catch (error) {
+    res.status(400).json({message: 'Catch Error : ' + err.message})
+   } 
+    
 }
 
 let UpdateCategory = async(req, res)=>{
