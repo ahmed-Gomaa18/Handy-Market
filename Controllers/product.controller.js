@@ -9,7 +9,7 @@ let addProduct = (req, res)=>{
     const {product_name, description, number_of_items ,price, discount, categories_id} = req.body;
     const imagesUrl = [];
     req.files.forEach(file => {
-        imagesUrl.push(`${req.protocol}://${req.hostname}:${process.env.PORT || 3000}/api/v1/image${req.finalDestination}/${file.filename}`);
+        imagesUrl.push(`${req.finalDestination}/${file.filename}`);
     });
 
     const newProduct= new Product({
