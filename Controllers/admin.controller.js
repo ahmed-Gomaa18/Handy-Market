@@ -6,7 +6,7 @@ const Category = require('../Models/Category.model');
 
 let getnotapprovedProductByID = async(req, res)=>{
     try{
-        let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: false}).populate('ratings_id');
+        let product = await Product.findById({_id: req.params['id'], soft_delete: false, product_approval: false}).populate('ratings_id');
         if(product){
             res.status(200).json({product})
         }
@@ -55,7 +55,7 @@ let updateApproveProduct = async(req, res)=>{
 
 let getAllUsers = async (req, res)=>{
     try{
-        let allUser = await User.find({});
+        let allUser = await User.find({_id:{$ne:req.user._id}});
         if(allUser.length){
             res.status(200).json(allUser)
         }else{

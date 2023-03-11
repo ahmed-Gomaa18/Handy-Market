@@ -30,11 +30,17 @@ router.patch("/deActivated",auth(userEndPoint.user),userController.deActivatedUs
 //reActive user
 router.patch("/reActivated",userController.reActivatedUser);
 
+//get whishlist
+router.get("/whishlist/",auth(userEndPoint.customer),userController.getWhislist);
+
 //whishlist User
 router.patch("/whishlist/:id",auth(userEndPoint.customer),userController.whishlistUser);
 
 //unwhishlist User
 router.patch("/unWhishlist/:id",auth(userEndPoint.customer),userController.unWhishlistUser);
+
+//get favorit of user
+router.get("/favorit/",auth(userEndPoint.customer),userController.getfavoriteUserList);
 
 //favoriteUser
 router.patch("/favorit/:id",auth(userEndPoint.customer),userController.favoriteUser);
@@ -42,11 +48,16 @@ router.patch("/favorit/:id",auth(userEndPoint.customer),userController.favoriteU
 //unfavorite User
 router.patch("/unfavorit/:id",auth(userEndPoint.customer),userController.unFavoriteUser);
 
+//get subscription list
+router.get("/subscription/",auth(userEndPoint.customer),userController.getSubscriptionUser);
+
 //subscription User
 router.patch("/subscription/:id",auth(userEndPoint.customer),userController.subscriptionUser);
 
 //unSubscription User
 router.patch("/unSubscription/:id",auth(userEndPoint.customer),userController.unSubscriptionUser);
+
+
 
 
 module.exports = router;

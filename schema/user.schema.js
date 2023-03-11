@@ -31,6 +31,7 @@ const updateUserSchema = {
             required: ["city", "street", "building_num"]
         },
         shop_name: { type: "string", maxLength: 20, minLength: 3 },
+        description:{type:"string"}
     },
     required: [],
     additionalProperties: false

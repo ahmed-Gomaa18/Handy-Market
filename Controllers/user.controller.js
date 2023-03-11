@@ -53,7 +53,7 @@ const updateUserWithProfile = async(req, res)=>{
 
 const updateUser = async (req, res) => {
     try {
-        const { user_name, fullname, address, phone, shop_name } = req.body;
+        const { user_name, fullname, address, phone, shop_name ,description } = req.body;
         const { _id } = req.user;
         const userData = await User.findById(_id);
         if (!userData) {
@@ -61,7 +61,7 @@ const updateUser = async (req, res) => {
         }
         else {
             const updatedUser = await User.findOneAndUpdate({ _id: _id },
-                { user_name, fullname, address, phone, shop_name }, { new: true })
+                { user_name, fullname, address, phone, shop_name ,description }, { new: true })
             res.status(200).json({ message: "changed successfully" , updatedUser});
         }
     }
@@ -136,7 +136,10 @@ const updateImage = async (req, res) => {
         }
     } catch (error) {
         console.log(error);
+
         res.status(400).json({message:'Catch Error : ' + error.message})
+
+
     }
 
 };
@@ -155,7 +158,9 @@ const deActivatedUser = async (req, res) => {
     }
     catch (err) {
 
+
         res.status(400).json({ message: "Catch Error : " + err.message })
+
     }
 };
 //reActivatedUser
@@ -173,9 +178,46 @@ const reActivatedUser = async (req, res) => {
     }
     catch (err) {
 
+
         res.status(400).json({ message: "Catch Error : " + err.message })
+
     }
 };
+
+//get whishlist
+const getWhislist = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id whishlist');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.whishlist.length > 0) {
+                res.status(405).json({message:"You Didn't have products in wishlist"})
+            } else {
+                const {whishlist} = user;
+                let wishListProducts = [];
+                for (let i = 0; i < whishlist.length; i++) {
+                    let product = await Product.findOne({_id:whishlist[i],soft_delete:false});
+                    if(product != null)
+                     wishListProducts.push(product);
+                }
+                if (wishListProducts.length > 0) {
+                    res.status(200).json({message:'Done' , wishListProducts})
+                } else {
+                    res.status(200).json({message:'Sorry your product in wishList is deleted' , wishListProducts})
+
+                }
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'Catch Error : ' + error.message})
+
+    }
+}
+
 //whishlist User
 const whishlistUser = async(req,res)=>{
     try {
@@ -205,6 +247,7 @@ const whishlistUser = async(req,res)=>{
             }
         }
     } catch (error) {
+
         // console.log(error);
         res.status(400).json({ message: "Catch Error : " + error.message })
 
@@ -239,11 +282,45 @@ const unWhishlistUser = async(req,res)=>{
             }
         }
     } catch (error) {
+
         //console.log(error);
         res.status(400).json({ message: "Catch Error : " + error.message })
 
     }
 };
+
+//get favoriteList User
+const getfavoriteUserList = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id favorite');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.favorite.length > 0) {
+                res.status(405).json({message:"You Didn't have products in favorite laist"})
+            } else {
+                const {favorite} = user;
+                let favoriteProducts = [];
+                for (let i = 0; i < favorite.length; i++) {
+                    let product = await Product.findOne({_id:favorite[i],soft_delete:false});
+                    if(product != null ) favoriteProducts.push(product);
+                }
+                if (favoriteProducts.length > 0) {
+                    res.status(200).json({message:'Done' , favoriteProducts})
+                } else {
+                    res.status(405).json({message:'Sorry your product in favorite is deleted'})
+                }
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'Catch Error : ' + error.message})
+
+    }
+}
+
 //favorite User
 const favoriteUser = async(req,res)=>{
     try {
@@ -273,6 +350,7 @@ const favoriteUser = async(req,res)=>{
             }
         }
     } catch (error) {
+    
         // console.log(error);
         res.status(400).json({ message: "Catch Error : " + error.message })
 
@@ -307,11 +385,47 @@ const unFavoriteUser = async(req,res)=>{
             }
         }
     } catch (error) {
+
         // console.log(error);
         res.status(400).json({ message: "Catch Error : " + error.message })
 
+
     }
 };
+
+//get Subscription list User
+const getSubscriptionUser = async(req,res)=>{
+    try {
+        const {_id}= req.user;
+        const user = await User.findById(_id).select(' -_id subscription');
+        if (!user) {
+            res.status(404).json({ message: "in-valid user id" , user })
+        } else {
+            if (!user.subscription.length > 0) {
+                res.status(405).json({message:"You Didn't have any user in subscription laist"})
+            } else {
+                const {subscription} = user;
+                let subscriptionSeller = [];
+                for (let i = 0; i < subscription.length; i++) {
+                    let seller = await User.findOne({_id:subscription[i],soft_delete:false}).select('-_id user_name shop_name description profile_image ');
+                    if(seller != null)
+                    subscriptionSeller.push(seller);
+                }
+                if (subscriptionSeller.length > 0) {
+                    res.status(200).json({message:'Done' , subscriptionSeller})
+                } else {
+                    res.status(405).json({message:'Sorry your user in subscription is deleted'})
+                }
+            }
+
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'Catch Error : ' + error.message})
+
+    }
+}
+
 //subscriptionUser
 const subscriptionUser = async(req,res)=>{
     try {
@@ -344,6 +458,7 @@ const subscriptionUser = async(req,res)=>{
             }
         }
     } catch (error) {
+
         // console.log(error);
         res.status(500).json({ message: "Catch Error : " + error.message })
 
@@ -378,6 +493,7 @@ const unSubscriptionUser = async(req,res)=>{
 
         }
     } catch (error) {
+
         // console.log(error);
         res.status(400).json({ message: "Catch Error : " + error.message })
 
@@ -397,6 +513,14 @@ module.exports = {
     subscriptionUser ,
     unWhishlistUser ,
     unFavoriteUser ,
+
     unSubscriptionUser,
     updateUserWithProfile
 }
+
+    unSubscriptionUser ,
+    getWhislist ,
+    getfavoriteUserList ,
+    getSubscriptionUser
+}
+
