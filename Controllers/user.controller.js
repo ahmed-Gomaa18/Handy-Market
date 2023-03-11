@@ -513,14 +513,10 @@ module.exports = {
     subscriptionUser ,
     unWhishlistUser ,
     unFavoriteUser ,
-
-    unSubscriptionUser,
-    updateUserWithProfile
-}
-
     unSubscriptionUser ,
     getWhislist ,
     getfavoriteUserList ,
-    getSubscriptionUser
+    getSubscriptionUser ,
+    updateUserWithProfile
 }
 
