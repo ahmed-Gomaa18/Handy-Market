@@ -33,12 +33,11 @@ const updateUserWithProfile = async(req, res)=>{
         if(user){
             // Check If User Has Previous profile Image Delete First
             if (user.profile_image){
-
-    //             let profilePath = (user.profile_image).split('image');
-    //             const fullPath = '../' + profilePath[1];
-    //             fs.unlinkSync(path.join(__dirname , fullPath))
-                   const fullPath = '../' + user.profile_image;
-                   fs.unlinkSync(path.join(__dirname , fullPath))
+                // let profilePath = (user.profile_image).split('image');
+                // const fullPath = '../' + profilePath[1];
+                // fs.unlinkSync(path.join(__dirname , fullPath))
+                const fullPath = '../' + user.profile_image;
+                fs.unlinkSync(path.join(__dirname , fullPath))
             }
             // req.file
             const imageURL = `${req.finalDestination}/${req.file.filename}`;
@@ -51,7 +50,7 @@ const updateUserWithProfile = async(req, res)=>{
             res.status(200).json({message:"Update User Profile" , userUpdate});
 
         }else{
-            res.status(400).json({message:'May be this user is invalid})
+            res.status(400).json({message:'May be this user is invalid'})
         }
     }catch(err){
         res.status(400).json({ message: "Catch Error : " +  err.message })
@@ -124,19 +123,12 @@ const updateImage = async (req, res) => {
                 res.status(404).json({message:'in-valid user loggIn'})
             } else {
                 if (user.profile_image){
-                     // Update 
-//                     let profilePath = (user.profile_image).split('image');
-//                     const fullPath = '../' + profilePath[1];
-//                     fs.unlinkSync(path.join(__dirname , fullPath))
-
 
                     const fullPath = '../' + user.profile_image;
                     fs.unlinkSync(path.join(__dirname , fullPath))
                 }
 
-                console.log()
 
-                // Updated
                 const imageURL = `${req.finalDestination}/${req.file.filename}`;
                 const userUpdate = await User.findByIdAndUpdate(_id ,{profile_image:imageURL} ,{new:true});
                 res.status(201).json({message:"Done updated Profile Picture" , userUpdate})
