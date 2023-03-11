@@ -21,6 +21,36 @@ const getUserProfile = async (req, res)=>{
     }
 };
 
+// Update Both profile with data
+const updateUserWithProfile = async(req, res)=>{
+    // req.body
+    const {user_name, full_name, city, street, building_num, phone, shop_name} = req.body;
+
+    const {_id} = req.user;
+    const user = await User.findById(_id);
+
+    if(user){
+        // Check If User Has Previous profile Image Delete First
+        if (user.profile_image){
+
+            let profilePath = (user.profile_image).split('image');
+            const fullPath = '../' + profilePath[1];
+            fs.unlinkSync(path.join(__dirname , fullPath))
+        }
+        // req.file
+        const imageURL = `${req.protocol}://${req.hostname}:${process.env.PORT || 3000}/api/v1/image${req.finalDestination}/${req.file.filename}`;
+        const userUpdate = await User.findByIdAndUpdate(_id ,{
+            profile_image:imageURL,
+            user_name, full_name, address:{city, street, building_num},
+            phone, shop_name
+        } ,{new:true});
+
+        res.status(200).json({message:"Update User Profile" , userUpdate});
+
+    }
+
+}
+
 const updateUser = async (req, res) => {
     try {
         const { user_name, fullname, address, phone, shop_name ,description } = req.body;
@@ -37,7 +67,7 @@ const updateUser = async (req, res) => {
     }
     catch (err) {
 
-        res.status(500).json({ message: "Catch Error : " +  err.message })
+        res.status(400).json({ message: "Catch Error : " +  err.message })
     }
 };
 
@@ -68,14 +98,15 @@ const updatePassword = async (req, res) => {
 
 
     } catch (err) {
-        console.log(err)
-        res.status(500).json({ message: "Catch Error : " + err.message })
+
+       res.status(400).json({ message: "Catch Error : " +  err.message })
     }
 };
 //updateImage
 const updateImage = async (req, res) => {
 
     try {
+
         if (req.fileErr) {
             res.status(406).json({message:"in-valid file format"});
         } else {
@@ -85,17 +116,30 @@ const updateImage = async (req, res) => {
                 res.status(404).json({message:'in-valid user loggIn'})
             } else {
                 if (user.profile_image){
-                    const fullPath = '../' + user.profile_image;
+                    // Update 
+                    let profilePath = (user.profile_image).split('image');
+                    const fullPath = '../' + profilePath[1];
                     fs.unlinkSync(path.join(__dirname , fullPath))
+
+
+                    // const fullPath = '../' + user.profile_image;
+                    // fs.unlinkSync(path.join(__dirname , fullPath))
                 }
-                const imageURL = `${req.finalDestination}/${req.file.filename}`;
+
+                console.log()
+
+                // Updated
+                const imageURL = `${req.protocol}://${req.hostname}:${process.env.PORT || 3000}/api/v1/image${req.finalDestination}/${req.file.filename}`;
                 const userUpdate = await User.findByIdAndUpdate(_id ,{profile_image:imageURL} ,{new:true});
                 res.status(201).json({message:"Done updated Profile Picture" , userUpdate})
             }
         }
     } catch (error) {
         console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        res.status(400).json({message:'Catch Error : ' + error.message})
+
+
     }
 
 };
@@ -114,7 +158,9 @@ const deActivatedUser = async (req, res) => {
     }
     catch (err) {
 
-        res.status(500).json({ message: "Catch Error : " + err.message })
+
+        res.status(400).json({ message: "Catch Error : " + err.message })
+
     }
 };
 //reActivatedUser
@@ -132,7 +178,9 @@ const reActivatedUser = async (req, res) => {
     }
     catch (err) {
 
-        res.status(500).json({ message: "Catch Error : " + err.message })
+
+        res.status(400).json({ message: "Catch Error : " + err.message })
+
     }
 };
 
@@ -199,8 +247,9 @@ const whishlistUser = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        // console.log(error);
+        res.status(400).json({ message: "Catch Error : " + error.message })
 
     }
 };
@@ -233,8 +282,9 @@ const unWhishlistUser = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        //console.log(error);
+        res.status(400).json({ message: "Catch Error : " + error.message })
 
     }
 };
@@ -300,8 +350,9 @@ const favoriteUser = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+    
+        // console.log(error);
+        res.status(400).json({ message: "Catch Error : " + error.message })
 
     }
 };
@@ -334,8 +385,10 @@ const unFavoriteUser = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        // console.log(error);
+        res.status(400).json({ message: "Catch Error : " + error.message })
+
 
     }
 };
@@ -405,8 +458,9 @@ const subscriptionUser = async(req,res)=>{
             }
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        // console.log(error);
+        res.status(500).json({ message: "Catch Error : " + error.message })
 
     }
 };
@@ -439,8 +493,9 @@ const unSubscriptionUser = async(req,res)=>{
 
         }
     } catch (error) {
-        console.log(error);
-        res.status(500).json({message:'Catch Error : ' + error.message})
+
+        // console.log(error);
+        res.status(400).json({ message: "Catch Error : " + error.message })
 
     }
 }
@@ -458,8 +513,14 @@ module.exports = {
     subscriptionUser ,
     unWhishlistUser ,
     unFavoriteUser ,
+
+    unSubscriptionUser,
+    updateUserWithProfile
+}
+
     unSubscriptionUser ,
     getWhislist ,
     getfavoriteUserList ,
     getSubscriptionUser
 }
+
