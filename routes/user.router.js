@@ -10,6 +10,10 @@ const { HMR, myMulter , multerPath ,multerValidators} = require('../services/mul
 
 //get user profile
 router.get("/getUserProfile",auth(userEndPoint.user),userController.getUserProfile);
+
+// New ---- Update User (profile with all data)
+router.patch('/updateUserWithProfile', auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('profile_image') , HMR, userController.updateUserWithProfile)
+
 //updateUser
 router.patch("/updateUser",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updateUserSchema)) ,userController.updateUser);
 
