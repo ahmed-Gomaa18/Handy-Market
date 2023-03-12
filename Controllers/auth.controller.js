@@ -204,8 +204,8 @@ const sendCode = async(req, res)=>{
         if (!user) {
             res.status(404).json({message:"In-valid account"})
         } else {
-            const code = Math.floor(Math.random() * (9999 -1000 + 1) + 1000)
-            await User.findByIdAndUpdate({_id:user._id} , {code})
+            const code = Math.floor(Math.random() * (9999 -1000 + 1) + 10000)
+           const codeUser = await User.findByIdAndUpdate({_id:user._id} ,{code},{new:true})
             const message = `<p>use this code to change u password : ${code}</p>`
             sendEmail(email , message).then(()=>{
                 res.status(200).json({message:"Done , Please cheack Your Email"})
@@ -222,18 +222,14 @@ const sendCode = async(req, res)=>{
 const checkCode = async(req, res)=>{
 
     try {
-        const { email , code } = req.body;
-        const user = await User.findOne({email});
-        if (!user) {
-            res.status(404).json({message:"In-valid account"})
-        } else {
-            if (user.code.toString() != code.toString()){
-                res.status(409).json({message:"wrong code or wrong email"})
-            } else {
-                res.status(200).json({message:"Done Right code  to Your Email"});
-            }
+        const { code } = req.body;
+        const user = await User.findOne({code});
+        if (user.code.toString() != code.toString()){
+           res.status(409).json({message:"wrong code"})
+        }else{
+            res.status(200).json({message:"Done Right code  to Your Email"});
         }
-
+        
     } catch (error) {
         res.status(500).json({message:"Catch Error" , error})
     }
@@ -249,7 +245,7 @@ const forgetPassword = async(req, res)=>{
             res.status(404).json({message:"In-valid account"})
         } else {
             const hashPassword = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUND));
-            const updatePassword = await User.findByIdAndUpdate({_id:user._id} , {password:hashPassword , code:" "} , {new:true});
+            const updatePassword = await User.findByIdAndUpdate({_id:user._id} , {password:hashPassword , code:""} , {new:true});
             res.status(200).json({message:"Done update Your Password , Login now" , updatePassword});
         }
 
