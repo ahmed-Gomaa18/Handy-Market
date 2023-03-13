@@ -6,6 +6,8 @@ const adminController = require('../Controllers/admin.controller');
 const { auth } = require('../MiddleWare/auth.md');
 const adminEndPoint = require("../utils/admin.endPoint");
 
+const productController = require('../Controllers/product.controller');
+
 const productMiddleWare = require('../MiddleWare/product.md');
 const { HMR, myMulter , multerPath ,multerValidators} = require('../services/multer');
 
@@ -41,7 +43,9 @@ router.get('/balance', auth(adminEndPoint.admin), adminController.allBalance);
 // Create Category
 router.post('/createCategory', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.createCategory)
 
-// Updaet Category
+// Update Category
 router.patch('/category/:id', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.UpdateCategory)
+// delete product
+router.delete('/delete/:productId',auth(adminEndPoint.admin),productController.deleteProduct);
 
 module.exports = router;
