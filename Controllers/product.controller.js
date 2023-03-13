@@ -33,7 +33,7 @@ let getAllProduct = async (req, res)=>{
         let productFilter = req.query == {} ? {} : filter(req.query)
 
         let allProduct = await Product.find({soft_delete: false, product_approval: true}).find(productFilter)
-        .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"})
+        .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name shop_name"})
         .populate({path:'categories_id', select: 'name'});
         
         if(allProduct.length == 0){
@@ -99,7 +99,7 @@ const addProductImage = async(req,res)=>{
 let getProductByID = async(req, res)=>{
     try{
         let product = await Product.findOne({_id: req.params['id'], soft_delete: false, product_approval: true}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",
-        select: "user_name"}).populate({path:'categories_id', select: 'name'});
+        select: "user_name shop_name"}).populate({path:'categories_id', select: 'name'});
         if(product){
             let category_id = product.categories_id[0]
             let relatedProduct = await Product.find({categories_id: {$in: category_id}}).populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name"}).populate({path:'categories_id', select: 'name'}).limit(5);
