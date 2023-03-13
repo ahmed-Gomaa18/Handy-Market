@@ -31,41 +31,44 @@ const updateUserWithProfile = async (req, res) => {
         const { _id } = req.user;
         const user = await User.findById(_id);
 
-        if (user) {
+
+        if(user){
 
             //Check if user send photo to update or not (Want To Update profile)
-            if (req.file) {
+            if(req.file){
 
                 // Check If User Has Previous profile Image Delete First
-                if (user.profile_image) {
+                if (user.profile_image){
+
                     // let profilePath = (user.profile_image).split('image');
                     // const fullPath = '../' + profilePath[1];
                     // fs.unlinkSync(path.join(__dirname , fullPath))
                     const fullPath = '../' + user.profile_image;
-                    fs.unlinkSync(path.join(__dirname, fullPath))
+                    fs.unlinkSync(path.join(__dirname , fullPath))
+                    
                 }
                 // req.file
                 const imageURL = `${req.finalDestination}/${req.file.filename}`;
-                const userUpdate = await User.findByIdAndUpdate(_id, {
-                    profile_image: imageURL,
-                    user_name, full_name, address: { city, street, building_num },
+                const userUpdate = await User.findByIdAndUpdate(_id ,{
+                    profile_image:imageURL,
+                    user_name, full_name, address:{city, street, building_num},
                     phone, shop_name
-                }, { new: true });
+                } ,{new:true});
 
-                res.status(200).json({ message: "Update User Profile", userUpdate });
-            } else {
+                res.status(200).json({message:"Update User Profile" , userUpdate});
+            }else{
                 // Update Data Without Profile image
-                const userUpdate = await User.findByIdAndUpdate(_id, {
-                    user_name, full_name, address: { city, street, building_num },
+                const userUpdate = await User.findByIdAndUpdate(_id ,{
+                    user_name, full_name, address:{city, street, building_num},
                     phone, shop_name
-                }, { new: true });
+                } ,{new:true});
 
-                res.status(200).json({ message: "Update User", userUpdate });
+                res.status(200).json({message:"Update User" , userUpdate});
             }
 
 
-        } else {
-            res.status(400).json({ message: 'May be this user is invalid' })
+        }else{
+            res.status(400).json({message:'May be this user is invalid'})
         }
     } catch (err) {
         res.status(400).json({ message: "Catch Error : " + err.message })
