@@ -55,8 +55,10 @@ const createOrder = async(req,res)=>{
       const finalList = []
 
       for (let i = 0; i < products.length; i++) {
-        // Updated
-        sumTotal = (products[i].quantity || 1 ) * products[i].unitPrice;
+        // new Update
+        let pro = await Product.findById(products[i].product_id).select('-_id price');
+        // Updated 
+        sumTotal = (products[i].quantity || 1 ) * pro.price;
         totalPrice += sumTotal ;
         finalList.push(products[i]);
       }
@@ -69,7 +71,7 @@ const createOrder = async(req,res)=>{
         await createBalance(savedOrder);
         await silodItemProduct(savedOrder.products)
 
-        res.status(201).json({message:"Done" , savedOrder });
+        res.status(201).json({message:"Done" , savedOrder, totalPrice });
       }
     
     } catch (error) {
@@ -95,7 +97,36 @@ const cancelOrder = async(req,res)=>{
 };
 
 
+// Calculate Total Price
+let orderTotalPrice = async(req, res)=>{
+  try{
+    if(req.body.items.length > 0){   
+      let total_price = 0;
+
+      let products = req.body.items;
+      for(let i = 0; i < products.length; i++){
+        let product = await Product.findById(products[i]._id).select('-_id price');
+        if(product){
+          total_price += (product.price * products[i].qty)
+        }else{
+          res.status(400).json({message: 'May be Error on Product id'})
+        }
+      }
+
+      res.status(200).json({total: total_price})
+    
+    }else{
+      res.status(200).json({total: 0})
+    }
+
+  }catch(err){
+    res.status(400).json({message:"Catch Error : " + err.message})
+  }
+}
+
+
 module.exports = {
     createOrder ,
-    cancelOrder
+    cancelOrder,
+    orderTotalPrice
 }
