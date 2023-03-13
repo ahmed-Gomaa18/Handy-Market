@@ -40,12 +40,14 @@ const updateUserWithProfile = async (req, res) => {
                 // Check If User Has Previous profile Image Delete First
                 if (user.profile_image){
 
+
                     // let profilePath = (user.profile_image).split('image');
                     // const fullPath = '../' + profilePath[1];
                     // fs.unlinkSync(path.join(__dirname , fullPath))
                     const fullPath = '../' + user.profile_image;
                     fs.unlinkSync(path.join(__dirname , fullPath))
                     
+
                 }
                 // req.file
                 const imageURL = `${req.finalDestination}/${req.file.filename}`;
