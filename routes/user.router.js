@@ -31,7 +31,7 @@ router.patch("/deActivated",auth(userEndPoint.user),userController.deActivatedUs
 router.patch("/reActivated",userController.reActivatedUser);
 
 //get whishlist
-router.get("/whishlist/",auth(userEndPoint.customer),userController.getWhislist);
+router.get("/whishlist",auth(userEndPoint.customer),userController.getWhislist);
 
 //whishlist User
 router.patch("/whishlist/:id",auth(userEndPoint.customer),userController.whishlistUser);
@@ -57,7 +57,7 @@ router.patch("/subscription/:id",auth(userEndPoint.customer),userController.subs
 //unSubscription User
 router.patch("/unSubscription/:id",auth(userEndPoint.customer),userController.unSubscriptionUser);
 
-
-
+//get all orders for User
+router.get("/orders",auth(userEndPoint.customer),userController.getUserOrders);
 
 module.exports = router;
