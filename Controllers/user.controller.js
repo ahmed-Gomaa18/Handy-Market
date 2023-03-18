@@ -11,7 +11,7 @@ const getUserProfile = async (req, res) => {
         const { _id } = req.user;
         const user = await User.findById({ _id, soft_delete: false });
         if (!user) {
-            res.status(400).json({ message: "this user not Exist" })
+            res.status(200).json({ message: "this user not Exist" })
         }
         else {
             res.status(200).json({ message: 'Done', user })
@@ -70,7 +70,7 @@ const updateUserWithProfile = async (req, res) => {
 
 
         }else{
-            res.status(400).json({message:'May be this user is invalid'})
+            res.status(200).json({message:'May be this user is invalid'})
         }
     } catch (err) {
         res.status(400).json({ message: "Catch Error : " + err.message })
@@ -83,7 +83,7 @@ const updateUser = async (req, res) => {
         const { _id } = req.user;
         const userData = await User.findById(_id);
         if (!userData) {
-            res.status(400).json({ message: "please enter data" });
+            res.status(200).json({ message: "please enter data" });
         }
         else {
             const updatedUser = await User.findOneAndUpdate({ _id: _id },
@@ -104,15 +104,15 @@ const updatePassword = async (req, res) => {
         const user = await User.findOne(_id);
 
         if (!user) {
-            res.status(400).json({ message: "sorry not a user" });
+            res.status(200).json({ message: "sorry not a user" });
         }
         else {
             const checkPassword = await bcrypt.compare(oldPassword, user.password)
             if (!checkPassword) {
-                res.status(400).json({ message: "password is miss match" });
+                res.status(200).json({ message: "password is miss match" });
             } else {
                 if (newPassword != confirmPassword) {
-                    res.status(400).json({ message: "confirm password not match new password" });
+                    res.status(200).json({ message: "confirm password not match new password" });
                 } else {
                     const hashPassword = await bcrypt.hash(newPassword, parseInt(process.env.SALT_ROUND));
                     const updatePassword = await User.findByIdAndUpdate({ _id }, { password: hashPassword }, { new: true });
@@ -168,7 +168,7 @@ const deActivatedUser = async (req, res) => {
         const { _id } = req.user;
         const user = await User.findById(_id);
         if (!user) {
-            res.status(400).json({ message: "not a user" });
+            res.status(200).json({ message: "not a user" });
         }
         else {
             const deActivatedUser = await User.findOneAndUpdate({ _id }, { deActivated: true, active: false }, { new: true })
@@ -188,7 +188,7 @@ const reActivatedUser = async (req, res) => {
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            res.status(400).json({ message: "not a user" });
+            res.status(200).json({ message: "not a user" });
         }
         else {
             const reActivatedUser = await User.findOneAndUpdate({ email }, { deActivated: false }, { new: true })
@@ -252,11 +252,11 @@ const whishlistUser = async (req, res) => {
             } else {
                 const userWhishlist = user.whishlist.find(product => product == productId);
                 if (userWhishlist) {
-                    res.status(400).json({ message: "You but that before" });
+                    res.status(200).json({ message: "You but that before" });
                 } else {
                     const updateWhishlist = await User.findByIdAndUpdate({ _id }, { $push: { whishlist: productId } }, { new: true });
                     if (!updateWhishlist) {
-                        res.status(400).json({ message: "You do it before" });
+                        res.status(200).json({ message: "You do it before" });
                     } else {
                         res.status(200).json({ message: "Done , Product in wishList" });
 
@@ -287,11 +287,11 @@ const unWhishlistUser = async (req, res) => {
             } else {
                 const userWhishlist = user.whishlist.find(product => product == productId);
                 if (!userWhishlist) {
-                    res.status(400).json({ message: "Not found in whishlist" });
+                    res.status(200).json({ message: "Not found in whishlist" });
                 } else {
                     const updateWhishlist = await User.findByIdAndUpdate({ _id }, { $pull: { whishlist: productId } }, { new: true });
                     if (!updateWhishlist) {
-                        res.status(400).json({ message: "filed remove from whishlist" });
+                        res.status(200).json({ message: "filed remove from whishlist" });
                     } else {
                         res.status(200).json({ message: "Done , remove from wishList" });
 
@@ -355,11 +355,11 @@ const favoriteUser = async (req, res) => {
             } else {
                 const userFavorite = user.favorite.find(product => product == productId);
                 if (userFavorite) {
-                    res.status(400).json({ message: "You but that before" });
+                    res.status(200).json({ message: "You but that before" });
                 } else {
                     const updateFavorite = await User.findByIdAndUpdate({ _id }, { $push: { favorite: productId } }, { new: true });
                     if (!updateFavorite) {
-                        res.status(400).json({ message: "You do it before" });
+                        res.status(200).json({ message: "You do it before" });
                     } else {
                         res.status(200).json({ message: "Done , Product in favorit" });
 
@@ -390,11 +390,11 @@ const unFavoriteUser = async (req, res) => {
             } else {
                 const userFavorite = user.favorite.find(product => product == productId);
                 if (!userFavorite) {
-                    res.status(400).json({ message: "Not found in favorit  list" });
+                    res.status(200).json({ message: "Not found in favorit  list" });
                 } else {
                     const updateFavorite = await User.findByIdAndUpdate({ _id }, { $pull: { favorite: productId } }, { new: true });
                     if (!updateFavorite) {
-                        res.status(400).json({ message: "can't remove it from favorit list" });
+                        res.status(200).json({ message: "can't remove it from favorit list" });
                     } else {
                         res.status(200).json({ message: "Done , remove it from favorit list" });
 
@@ -463,11 +463,11 @@ const subscriptionUser = async (req, res) => {
                 } else {
                     const userSub = user.subscription.find(userID => userID == userSubscripID);
                     if (userSub) {
-                        res.status(400).json({ message: "You subscrip before" });
+                        res.status(200).json({ message: "You subscrip before" });
                     } else {
                         const updateSubscription = await User.findByIdAndUpdate({ _id }, { $push: { subscription: userSubscripID } }, { new: true });
                         if (!updateSubscription) {
-                            res.status(400).json({ message: "You do it before" });
+                            res.status(200).json({ message: "You do it before" });
                         } else {
                             res.status(200).json({ message: "Done , subscription" });
                         }
@@ -498,11 +498,11 @@ const unSubscriptionUser = async (req, res) => {
             } else {
                 const userSub = user.subscription.find(userID => userID == userSubscripID);
                 if (!userSub) {
-                    res.status(400).json({ message: "can't found in subscription list " });
+                    res.status(200).json({ message: "can't found in subscription list " });
                 } else {
                     const updateSubscription = await User.findByIdAndUpdate({ _id }, { $pull: { subscription: userSubscripID } }, { new: true });
                     if (!updateSubscription) {
-                        res.status(400).json({ message: "can't remove from subscription list" });
+                        res.status(200).json({ message: "can't remove from subscription list" });
                     } else {
                         res.status(200).json({ message: "Done , remove from subscription list" });
                     }
@@ -529,11 +529,11 @@ const getUserOrders = async (req, res) => {
             if (orderslist.length > 0)
                 res.status(200).json(orderslist);
             else
-                res.status(400).json({ message: "this user not has any orders" });
+                res.status(200).json({ message: "this user not has any orders" });
 
         }
         else
-            res.status(400).json({ message: "Can't find this user" })
+            res.status(200).json({ message: "Can't find this user" })
     } catch (error) {
         res.status(500).json({ message: "Catch Error..", error })
     }
