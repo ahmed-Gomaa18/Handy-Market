@@ -31,6 +31,9 @@ router.get('/notApproval/:id', auth(adminEndPoint.admin),adminController.getnota
 
 // Get All Users
 router.get('/allUsers', auth(adminEndPoint.admin), adminController.getAllUsers);
+
+//Get All Seller
+router.get('/allSellers', auth(adminEndPoint.admin), adminController.getAllSeller);
 // Get Specific User By Id
 router.get('/user/:id', auth(adminEndPoint.admin), adminController.getUserByID);
 
@@ -40,6 +43,12 @@ router.patch('/user/block/:Block/:id', auth(adminEndPoint.admin), adminControlle
 // Get All Balance
 router.get('/balance', auth(adminEndPoint.admin), adminController.allBalance);
 
+// Get last Balance
+router.get('/lastBalance', auth(adminEndPoint.admin), adminController.getLastBalance);
+
+// Get total number of orders 
+router.get('/NumberOfBalance', auth(adminEndPoint.admin), adminController.getNumberOfOrders);
+
 // Create Category
 router.post('/createCategory', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.createCategory)
 
@@ -47,5 +56,10 @@ router.post('/createCategory', auth(adminEndPoint.admin), categoryMiddleWare.che
 router.patch('/category/:id', auth(adminEndPoint.admin), categoryMiddleWare.checkCategoryExist, adminController.UpdateCategory)
 // delete product
 router.delete('/delete/:productId',auth(adminEndPoint.admin),productController.deleteProduct);
+
+// complete delete to not approval product
+router.delete('/delete/notApproval/:productId',auth(adminEndPoint.admin),adminController.deleteNotApprovalProduct);
+
+
 
 module.exports = router;

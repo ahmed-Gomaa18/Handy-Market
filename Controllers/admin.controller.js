@@ -53,6 +53,20 @@ let updateApproveProduct = async(req, res)=>{
 
 }
 
+let deleteNotApprovalProduct = async(req, res)=>{
+    try {
+        let product = await Product.findByIdAndDelete(req.params['productId']);
+        if(product){
+            res.status(200).json({message: 'This Product Is Deleted Successfuly.'});
+        }else{
+            res.status(400).json({message: 'May Wrong in Product ID or This Product Not Exist'})
+        }
+    } 
+    catch (err) {
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
 let getAllUsers = async (req, res)=>{
     try{
         let allUser = await User.find({_id:{$ne:req.user._id}});
@@ -81,7 +95,7 @@ let getUserByID = async (req, res)=>{
 
 let blockUser = async(req, res)=>{
     try{
-        console.log(req.params['Block'] )
+       
         let block = req.params['Block'] == 'true'? true:false;
 
         let blockUser = await User.findByIdAndUpdate(req.params['id'], {isBlocked: block}, {new: true})
@@ -96,9 +110,22 @@ let blockUser = async(req, res)=>{
     }
 }
 
+let getAllSeller = async (req, res)=>{
+    try{
+        let allUser = await User.find({role: "Seller"});
+        if(allUser.length){
+            res.status(200).json(allUser)
+        }else{
+            res.status(200).json(allUser.length)
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
 let allBalance = async(req, res)=>{
     try{
-        let allBalance = await Balance.find({}).populate('order_id');
+        let allBalance = await Balance.find({}).populate({path:'order_id', populate:{path:'user_id' ,select:"user_name email"}});
         if(!allBalance){
             res.status(400).json({message: 'May Error Happen When Get All Balance'})
         }else{
@@ -138,6 +165,31 @@ let UpdateCategory = async(req, res)=>{
 
 
 }
+let getLastBalance = async (req, res)=>{
+    try{
+        let balance = await Balance.find().limit(1).sort({$natural:-1});
+        if(!balance){
+            res.status(400).json({message: 'May Error Happen When Get Balance'})
+        }else{
+            res.status(200).json({message: balance})
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
+
+let getNumberOfOrders = async (req, res)=>{
+    try{
+        let numberBalance = await Balance.estimatedDocumentCount();
+        if(!numberBalance){
+            res.status(400).json({message: 'May Error Happen When Get Balance'})
+        }else{
+            res.status(200).json({message: numberBalance})
+        }
+    }catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
+}
 
 
 module.exports = {
@@ -149,6 +201,10 @@ module.exports = {
     blockUser,
     allBalance,
     createCategory,
-    UpdateCategory
+    UpdateCategory,
+    deleteNotApprovalProduct,
+    getLastBalance,
+    getNumberOfOrders,
+    getAllSeller
 
 }
