@@ -14,6 +14,20 @@ connectToDB()
 // middelWare to read & set Cookie & API with front-end
 app.use(cors({ origin: true, credentials: true }));
 
+// For Unexcepted Error
+// Handel UncaughtException Exception 
+process.on("uncaughtException", (exception)=>{
+    console.log(exception)
+    console.log("Error From uncaughtException");
+    // process.exit(1);
+})
+// Handel UnhandledRejection Exception 
+process.on("unhandledRejection", (exception)=>{
+    console.log(exception)
+    console.log("Promise Rejection");
+
+    // process.exit(1);
+})
 
 // middelWare to Understand response
 // parse application/x-www-form-urlencoded
