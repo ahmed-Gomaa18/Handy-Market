@@ -34,7 +34,7 @@ let getAllProduct = async (req, res)=>{
 
         let allProduct = await Product.find({soft_delete: false, product_approval: true}).find(productFilter)
         .populate({ path: 'ratings_id', select: "-_id rating" }).populate({path: "created_by",select: "user_name shop_name"})
-        .populate({path:'categories_id', select: 'name'});
+        .populate({path:'categories_id', select: 'name_en name_ar'});
         
         if(allProduct.length == 0){
             res.status(200).json(allProduct)

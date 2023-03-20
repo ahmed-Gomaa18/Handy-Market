@@ -3,7 +3,11 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const categorySchema = new mongoose.Schema({
-    name:{
+    name_en:{
+        type: String,
+        required: true
+    },
+    name_ar:{
         type: String,
         required: true
     },
