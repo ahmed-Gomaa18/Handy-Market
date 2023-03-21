@@ -317,7 +317,7 @@ const getfavoriteUserList = async (req, res) => {
             res.status(404).json({ message: "in-valid user id", user })
         } else {
             if (!user.favorite.length > 0) {
-                res.status(405).json({ message: "You Didn't have products in favorite laist" })
+                res.status(200).json(user.favorite);
             } else {
                 const { favorite } = user;
                 let favoriteProducts = [];
@@ -529,7 +529,7 @@ const getUserOrders = async (req, res) => {
             if (orderslist.length > 0)
                 res.status(200).json(orderslist);
             else
-                res.status(200).json({ message: "this user not has any orders" });
+                res.status(200).json(orderslist);
 
         }
         else
