@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { auth } = require('../MiddleWare/auth.md');
-const authController = require('../controllers/auth.controller');
+const authController = require('../Controllers/auth.controller');
 const endPointAuth = require('../utils/auth.endPoint');
 const validateDto = require('../MiddleWare/validate-dto');
 const authSchema = require('../schema/auth.schema');
