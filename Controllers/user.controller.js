@@ -523,9 +523,9 @@ const unSubscriptionUser = async (req, res) => {
 const getUserOrders = async (req, res) => {
     try {
         if (req.user) {
-            console.log(req.user)
+            // console.log(req.user)
             let orderslist = await Order.find({ user_id: req.user._id })
-            console.log(orderslist)
+            // console.log(orderslist)
             if (orderslist.length > 0)
                 res.status(200).json(orderslist);
             else

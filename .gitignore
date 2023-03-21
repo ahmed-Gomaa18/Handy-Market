@@ -1,3 +1,4 @@
 /node_modules
 /uploads/product
 /uploads/users
+.env
