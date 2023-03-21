@@ -7,7 +7,7 @@
       age: {type: "number", minimum: 15},
       gender:{type:"string" ,enum: ['Male', 'Female']},
       role:{type:"string" ,enum: ['Admin', 'Customer', 'Seller']},
-      password:{type: "string",pattern:'^[A-Z][1-9]{2,5}$'},
+      password:{type: "string",pattern:'^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$'},
       confirmPassword:{type:"string" , const:{
         $data:"1/password"
       }},
