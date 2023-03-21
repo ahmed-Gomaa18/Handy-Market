@@ -18,7 +18,7 @@ const createBalance = async(order)=>{
     lastBalanceBella = 0
     }
   // new Order Profit
-  let new_order_profit = ((order.totalPrice) * (precentage[0].precentage / 100)) ;
+  let new_order_profit = ((order.totalPrice) * (precentage[0].precentage  / 100)) ;
   let newBalance = new Balance({
     total_profit:  lastBalanceBella + new_order_profit,
     order_id: order._id,
