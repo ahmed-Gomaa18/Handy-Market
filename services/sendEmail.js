@@ -16,7 +16,7 @@ async function sendEmail(dest , message)
     
       // send mail with defined transport object
         let mailOpations = {
-        from: `"Fred Foo 👻" <${process.env.SENDER_EMAIL}>`, // sender address
+        from: `"Handy Market " <${process.env.SENDER_EMAIL}>`, // sender address
         to: dest, // list of receivers
         subject: "Hendy Market", // Subject line
         text: "Hello world?", // plain text body

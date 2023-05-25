@@ -101,7 +101,7 @@ const resendToken  = async(req, res)=>{
                     <a href = ${link2}>Refresh Token</a>`;
             
                     sendEmail(user.email , message).then(()=>{    
-                        res.status(201).json({message:"Done plz check u email now"})
+                        res.status(201).send("Done plz check u email now")
                     }).catch(()=>{
                         res.status(409).json({message:"Email not Right One"});
                     })

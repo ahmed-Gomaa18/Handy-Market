@@ -1,8 +1,8 @@
 const updatePasswordUserSchema = {
     type: "object",
     properties: {
-        oldPassword: { type: "string", pattern: '^[A-Z][1-9]{2,5}$' },
-        newPassword: { type: "string", pattern: '^[A-Z][1-9]{2,5}$' },
+        oldPassword: { type: "string", pattern:'^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$' },
+        newPassword: { type: "string", pattern:'^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$' },
         confirmPassword: {
             type: "string",
              const: {
