@@ -154,7 +154,7 @@ const login = async (req, res)=>{
         const {email , password ,rememberMe} = req.body ;
         const user = await User.findOne({email});
         if (!user) {
-            res.status(404).json({message:"In-vaild Email"})
+            res.status(404).json({message:"In-vaild Email OR Password"})
         } else {
             if (!user.confirm_email) {
                 res.status(400).json({message:"Please confrim your Email first "});
@@ -167,7 +167,7 @@ const login = async (req, res)=>{
                     } else {
                         const match = await bcrypt.compare(password , user.password);
                         if (!match) {
-                            res.status(400).json({message:"Email and Password misMatch"});
+                            res.status(400).json({message:"Email OR Password misMatch"});
                         } else {
                             // I append Check if already login or not
                             if(user.active){

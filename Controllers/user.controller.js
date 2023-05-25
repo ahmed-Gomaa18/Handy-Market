@@ -6,6 +6,35 @@ const Order = require("../Models/Order.model")
 const Product = require("../Models/Product.model");
 
 
+const DatauriParser = require("datauri/parser");
+const parser = new DatauriParser();
+const cloudinary = require('../services/cloudinary');
+
+
+// Function to upload photos to {cloudinary}
+const uploadimageProfile = async(request)=>{
+
+    const uploadOptions = { folder: 'Users' }; 
+
+    if(request.file.mimetype == "application/pdf"){
+        throw Error("Can't to upload PDF")
+    }
+
+    let file64 = await parser.format(path.extname(request.file.originalname).toString(), request.file.buffer);
+    
+    let result = await cloudinary.uploader.upload(file64.content, uploadOptions);
+
+    // Check upload Successfully
+    if(result){
+        return result.secure_url
+    }else{
+        // Handel Error
+        throw Error('Failed to upload Profile')
+    }
+
+
+}
+
 const getUserProfile = async (req, res) => {
     try {
         const { _id } = req.user;
@@ -22,9 +51,10 @@ const getUserProfile = async (req, res) => {
     }
 };
 
-// Update Both profile with data
+// Update Both profile with data [ Cloudnary ]
 const updateUserWithProfile = async (req, res) => {
     try {
+        
         // req.body
         const { user_name, full_name, city, street, building_num, phone, shop_name } = req.body;
 
@@ -37,20 +67,8 @@ const updateUserWithProfile = async (req, res) => {
             //Check if user send photo to update or not (Want To Update profile)
             if(req.file){
 
-                // Check If User Has Previous profile Image Delete First
-                if (user.profile_image){
+                let imageURL = await uploadimageProfile(req);
 
-
-                    // let profilePath = (user.profile_image).split('image');
-                    // const fullPath = '../' + profilePath[1];
-                    // fs.unlinkSync(path.join(__dirname , fullPath))
-                    const fullPath = '../' + user.profile_image;
-                    fs.unlinkSync(path.join(__dirname , fullPath))
-                    
-
-                }
-                // req.file
-                const imageURL = `${req.finalDestination}/${req.file.filename}`;
                 const userUpdate = await User.findByIdAndUpdate(_id ,{
                     profile_image:imageURL,
                     user_name, full_name, address:{city, street, building_num},
@@ -76,6 +94,12 @@ const updateUserWithProfile = async (req, res) => {
         res.status(400).json({ message: "Catch Error : " + err.message })
     }
 }
+
+
+
+
+
+
 
 const updateUser = async (req, res) => {
     try {
@@ -212,7 +236,7 @@ const getWhislist = async (req, res) => {
             res.status(404).json({ message: "in-valid user id", user })
         } else {
             if (!user.whishlist.length > 0) {
-                res.status(405).json({ message: "You Didn't have products in wishlist" })
+                res.status(200).json({ message: "You Didn't have products in wishlist" })
             } else {
                 const { whishlist } = user;
                 let wishListProducts = [];
@@ -317,7 +341,9 @@ const getfavoriteUserList = async (req, res) => {
             res.status(404).json({ message: "in-valid user id", user })
         } else {
             if (!user.favorite.length > 0) {
-                res.status(200).json(user.favorite);
+
+                res.status(200).json({ message: "You Didn't have products in favorite laist" })
+
             } else {
                 const { favorite } = user;
                 let favoriteProducts = [];
