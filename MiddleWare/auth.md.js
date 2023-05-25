@@ -43,7 +43,7 @@ const auth = (accessRoles)=>{
             //console.log(error);
             if (error?.message == "jwt expired") {
               const updateActive =  await User.findOneAndUpdate({_Token:token},{active:false ,_Token:null},{new:true})
-              res.status(464).json({message:"Please Login aggen"})
+              res.status(464).json({message:"Please Login again"})
             }else{
                 res.status(500).json({message:"Catch Error Auth Middel" , error});
             }

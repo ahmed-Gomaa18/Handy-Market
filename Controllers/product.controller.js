@@ -1,27 +1,67 @@
 const Product = require('../Models/Product.model');
 const filter = require('../services/filter')
 
+const cloudinary = require('../services/cloudinary');
+
+const DatauriParser = require("datauri/parser");
+const parser = new DatauriParser();
+const path = require('path');
+const console = require('console');
+
+// Function to upload photos to cloudinary
+const uploadPhotos = async(request)=>{
+
+    const imagesUrl = [];
+    const uploadOptions = { folder: 'Products' }; 
+    for(let i = 0; i < request.files.length; i++){
+        
+        // Check Formate
+        if(request.files[i].mimetype == "application/pdf"){
+            throw Error("Can't to upload PDF")
+        }
+
+        let file64 = await parser.format(path.extname(request.files[i].originalname).toString(), request.files[i].buffer);
+
+        let result = await cloudinary.uploader.upload(file64.content, uploadOptions);
+
+        if(result){
+            imagesUrl.push(result.secure_url);
+        }else{
+            // Handel Error
+            throw Error('Failed to upload image')
+        }
+
+    }
+
+    return imagesUrl;
+
+}
 
 // Test
-let addProduct = (req, res)=>{
+let addProduct = async(req, res)=>{  
 
-    const created_by = req.user._id;
-    const {product_name, description, number_of_items ,price, discount, categories_id} = req.body;
-    const imagesUrl = [];
-    req.files.forEach(file => {
-        imagesUrl.push(`${req.finalDestination}/${file.filename}`);
-    });
+    try{
+        let imagesUrl = await uploadPhotos(req);
 
-    const newProduct= new Product({
-        product_name,description, number_of_items ,price, created_by, categories_id, discount, photos: imagesUrl
-    })
-    newProduct.save()
-    .then((data)=>{
-        res.status(201).json({message: 'Add Product Success', data})
-    })
-    .catch((err)=>{
-        res.status(400).json({message: 'Catch Erro : ' + err.message})
-    })
+        const created_by = req.user._id;
+
+        const {product_name, description, number_of_items ,price, discount, categories_id} = req.body;
+
+        const newProduct= new Product({
+            product_name,description, number_of_items ,price, created_by, categories_id, discount, photos: imagesUrl
+        })
+        newProduct.save()
+        .then((data)=>{
+            res.status(201).json({message: 'Add Product Success', data})
+        })
+        .catch((err)=>{
+            res.status(400).json({message: 'Catch Erro : ' + err.message})
+        })
+
+    }
+    catch(err){
+        res.status(400).json({message: 'Catch Error : ' + err.message})
+    }
 
 };
 
@@ -44,7 +84,7 @@ let getAllProduct = async (req, res)=>{
         }
     }
     catch(err){
-        res.status(400).json({message: 'Catch Error : ' + err.mesage})
+        res.status(400).json({message: 'Catch Error : ' + err.message})
     }
 
     

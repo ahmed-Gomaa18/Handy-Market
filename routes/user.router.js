@@ -5,14 +5,19 @@ const userEndPoint= require("../utils/user.endPoints");
 const validateDto = require('../MiddleWare/validate-dto');
 const userSchema = require('../schema/user.schema');
 const ajvInstance = require('../schema/ajv-instance');
-const { HMR, myMulter , multerPath ,multerValidators} = require('../services/multer');
+const { HMR, upload} = require('../services/multer');
 
 
 //get user profile
 router.get("/getUserProfile",auth(userEndPoint.user),userController.getUserProfile);
 
 // New ---- Update User (profile with all data)
-router.patch('/updateUserWithProfile', auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('profile_image') , HMR, userController.updateUserWithProfile)
+//router.patch('/updateUserWithProfile', auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('profile_image') , HMR, userController.updateUserWithProfile)
+
+// New [Cloudnary] Update User (profile with all data)
+router.patch('/updateUserWithProfile', auth(userEndPoint.user), upload.single('profile_image') , HMR, userController.updateUserWithProfile)
+
+
 
 //updateUser
 router.patch("/updateUser",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updateUserSchema)) ,userController.updateUser);
@@ -21,7 +26,7 @@ router.patch("/updateUser",auth(userEndPoint.user),validateDto(ajvInstance.compi
 router.patch("/updatePassword",auth(userEndPoint.user),validateDto(ajvInstance.compile(userSchema.updatePasswordUserSchema)),userController.updatePassword);
 
 //update Img With multer
-router.patch("/updateImag",auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('image') , HMR, userController.updateImage);
+//router.patch("/updateImag",auth(userEndPoint.user), myMulter( multerPath.profilePic , multerValidators.image).single('image') , HMR, userController.updateImage);
 
 
 //deActivatedUser 
